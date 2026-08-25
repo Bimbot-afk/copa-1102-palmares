@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Palmares - 1102</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <header>
+        <h1>🏆 Copa 1102 🏆</h1>
+        <p>"La grandez se escribe a cada minuto"</p>
+    </header>
+
+    <main>
+        <div class="teams-grid" id="teams-grid">
+            <!-- Los escudos se generarán aquí con JavaScript -->
+        </div>
+    </main>
+
+    <!-- Modal para detalles del equipo -->
+    <div id="team-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <div class="modal-layout">
+                <!-- Columna Izquierda: Logo y Nombre -->
+                <div class="modal-left">
+                    <img id="modal-logo" src="" alt="Escudo">
+                    <h2 id="modal-team-name">Nombre del Equipo</h2>
+                    <p id="modal-team-desc" class="team-description"></p>
+                    
+                    <div class="rival-section" id="modal-rival-section">
+                        <h4>Máximo Rival</h4>
+                        <img id="modal-rival-logo" src="" alt="Escudo Rival" class="rival-logo">
+                        <span id="modal-rival-name" class="rival-name"></span>
+                        <span id="modal-rival-history" class="rival-history"></span>
+                    </div>
+                </div>
+
+                <!-- Columna Derecha: Stats -->
+                <div class="modal-right">
+                    <div class="trophy-section">
+                        <h3><img src="eFotball league/depositphotos_475516652-stock-illustration-uefa-europa-conference-league-cup-removebg-preview.png"
+                                class="icon-img" alt="🏆"> Campeonatos (<span id="count-champ">0</span>)</h3>
+                        <ul id="list-champ"></ul>
+                    </div>
+
+                    <div class="trophy-section">
+                        <h3><img src="eFotball league/istockphoto-2100063573-612x612-removebg-preview.png"
+                                class="icon-img" alt="🥈"> Subcampeonatos (<span id="count-runner">0</span>)</h3>
+                        <ul id="list-runner"></ul>
+                    </div>
+
+                    <div class="trophy-section">
+                        <h3><img src="eFotball league/istockphoto-2100063573-612x61a2-removebg-preview.png"
+                                class="icon-img" alt="🥉"> Terceros Puestos (<span id="count-third">0</span>)</h3>
+                        <ul id="list-third"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>

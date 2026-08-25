@@ -1,0 +1,279 @@
+:root {
+    --primary-bg: #121212;
+    --card-bg: #1e1e1e;
+    --text-color: #f0f0f0;
+    --accent-color: #f39c12;
+    --modal-bg: rgba(0, 0, 0, 0.8);
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--primary-bg);
+    color: var(--text-color);
+    margin: 0;
+    padding: 20px;
+    text-align: center;
+}
+
+header h1 {
+    color: var(--accent-color);
+    margin-bottom: 5px;
+}
+
+header p {
+    color: #aaaaaa;
+    margin-bottom: 40px;
+}
+
+/* Grid de Escudos */
+.teams-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 30px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.team-card {
+    background-color: var(--card-bg);
+    border-radius: 15px;
+    padding: 20px 10px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+.team-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(243, 156, 18, 0.2);
+}
+
+.stars-container {
+    display: flex;
+    justify-content: center;
+    gap: 2px;
+    margin-bottom: 10px;
+    min-height: 20px;
+}
+
+.star-icon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+.team-logo {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    margin-bottom: 10px;
+}
+
+.team-name {
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 100;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--modal-bg);
+    backdrop-filter: blur(5px);
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background-color: var(--card-bg);
+    padding: 30px;
+    border-radius: 15px;
+    max-width: 800px;
+    /* Aumentado para 2 columnas */
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    position: relative;
+    border: 1px solid #333;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    text-align: left;
+}
+
+.close-button {
+    color: #aaa;
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-button:hover {
+    color: white;
+}
+
+/* Layout de 2 columnas para el modal */
+.modal-layout {
+    display: flex;
+    gap: 40px;
+    margin-top: 10px;
+}
+
+/* Columna Izquierda */
+.modal-left {
+    flex: 0 0 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    border-right: 1px solid #333;
+    padding-right: 20px;
+    padding-top: 20px;
+}
+
+#modal-logo {
+    width: 160px;
+    height: 160px;
+    object-fit: contain;
+    margin-bottom: 20px;
+}
+
+#modal-team-name {
+    margin: 0;
+    font-size: 1.8rem;
+    color: var(--accent-color);
+}
+
+.team-description {
+    font-size: 0.95rem;
+    color: #cccccc;
+    margin-top: 15px;
+    margin-bottom: 20px;
+    line-height: 1.4;
+    text-align: center;
+}
+
+.rival-section {
+    background-color: #2a2a2a;
+    padding: 15px;
+    border-radius: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+    border: 1px solid #444;
+}
+
+.rival-section h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #ff4d4d; /* Rojo para destacar la rivalidad */
+    font-size: 1.1rem;
+}
+
+.rival-logo {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    margin-bottom: 8px;
+    display: none; /* Se muestra con JS si existe */
+}
+
+.rival-name {
+    display: block;
+    font-weight: bold;
+    font-size: 1.05rem;
+    margin-bottom: 5px;
+    color: var(--text-color);
+}
+
+.rival-history {
+    display: block;
+    font-size: 0.9rem;
+    color: #aaa;
+}
+
+/* Columna Derecha */
+.modal-right {
+    flex: 1;
+}
+
+.icon-img {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+    vertical-align: middle;
+    margin-right: 8px;
+}
+
+.trophy-section {
+    margin-bottom: 25px;
+}
+
+.trophy-section h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: var(--accent-color);
+    border-bottom: 1px solid #333;
+    padding-bottom: 5px;
+    display: flex;
+    align-items: center;
+}
+
+.trophy-section ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.trophy-section li {
+    background-color: #2a2a2a;
+    margin-bottom: 10px;
+    padding: 12px 15px;
+    border-radius: 8px;
+}
+
+.tournament-name {
+    font-weight: bold;
+    font-size: 1.1rem;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.tournament-result {
+    font-size: 1rem;
+    color: #a8d5ff;
+    /* Color diferente para destacar el resultado */
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.tournament-note {
+    font-size: 0.9rem;
+    color: #ccc;
+    font-style: italic;
+}
+
+/* Responsive para pantallas pequeñas (celulares) */
+@media (max-width: 600px) {
+    .modal-layout {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .modal-left {
+        border-right: none;
+        border-bottom: 1px solid #333;
+        padding-right: 0;
+        padding-bottom: 20px;
+    }
+}
