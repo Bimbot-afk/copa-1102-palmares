@@ -1,4 +1,20 @@
-document.addEventListener('DOMContentLoaded', () => {
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyCzqBWyR7djQKkfwm9vc5SH7NxNdkKcTF8",
+    authDomain: "copa-1102.firebaseapp.com",
+    projectId: "copa-1102",
+    storageBucket: "copa-1102.firebasestorage.app",
+    messagingSenderId: "763183663754",
+    appId: "1:763183663754:web:57b912bb7a1d40f677fb73"
+};
+
+// Inicializar Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+document.addEventListener('DOMContentLoaded', async () => {
     const grid = document.getElementById('teams-grid');
     const modal = document.getElementById('team-modal');
     const closeBtn = document.querySelector('.close-button');
@@ -24,8 +40,32 @@ document.addEventListener('DOMContentLoaded', () => {
     // Ruta a la imagen de la estrella
     const starImagePath = "eFotball league/Estrella.png";
 
+    // Muestra algo mientras carga
+    grid.innerHTML = '<p style="color:white; font-size: 1.2rem; grid-column: 1 / -1; text-align: center;">Cargando datos desde la nube...</p>';
+
+    // Descargar equipos desde Firebase
+    let teams = [];
+    try {
+        const querySnapshot = await getDocs(collection(db, "teams"));
+        querySnapshot.forEach((doc) => {
+            teams.push(doc.data());
+        });
+        
+        // Si Firebase está vacío, mostramos un mensaje
+        if (teams.length === 0) {
+            grid.innerHTML = '<p style="color:white;">Base de datos vacía. Entra al Panel de Administrador para subir los datos.</p>';
+            return;
+        }
+    } catch (error) {
+        console.error("Error cargando firebase: ", error);
+        grid.innerHTML = '<p style="color:red;">Error de conexión. Revisa que Firebase esté configurado.</p>';
+        return;
+    }
+    
+    grid.innerHTML = ''; // Limpiamos el mensaje de carga
+
     // Ordenar los equipos para que los más ganadores queden al principio
-    teams.sort((a, b) => b.championships.length - a.championships.length);
+    teams.sort((a, b) => (b.championships ? b.championships.length : 0) - (a.championships ? a.championships.length : 0));
 
     // 1. Generar la cuadrícula de equipos
     function renderTeams() {

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Copa 1102</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <header>
+        <h1>⚙️ Panel de Administración</h1>
+        <p>Añade nuevos títulos, marcadores e historial a los equipos</p>
+    </header>
+
+    <main class="admin-container">
+        <!-- Pantalla de Login (Falsa por ahora hasta que conectemos Firebase) -->
+        <div id="login-section" class="admin-card">
+            <h2>Acceso Restringido</h2>
+            <p>Ingresa la contraseña para editar los datos.</p>
+            <input type="password" id="admin-password" placeholder="Contraseña secreta...">
+            <button id="login-btn" class="action-btn">Entrar</button>
+            <p id="login-error" class="error-msg"></p>
+        </div>
+
+        <!-- Panel de Control (Oculto hasta hacer login) -->
+        <div id="dashboard-section" class="admin-card" style="display: none;">
+            <h2>🏆 Registrar Nuevo Torneo</h2>
+            
+            <div class="form-group">
+                <label>Equipo:</label>
+                <select id="team-select">
+                    <!-- Se llenará con JS -->
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Tipo de Logro:</label>
+                <select id="trophy-type">
+                    <option value="championships">🥇 Campeonato (Suma Estrella)</option>
+                    <option value="runnerUps">🥈 Subcampeonato</option>
+                    <option value="thirdPlaces">🥉 Tercer Puesto</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Nombre de la Copa (Ej. Copa 1102):</label>
+                <input type="text" id="tournament-name" placeholder="Copa...">
+            </div>
+
+            <div class="form-group">
+                <label>Marcador / Resultado (Opcional):</label>
+                <input type="text" id="tournament-result" placeholder="Ej: FC Domo 3 - 1 Cristian FC">
+            </div>
+
+            <div class="form-group">
+                <label>Nota / Historia del partido:</label>
+                <textarea id="tournament-note" placeholder="Ej: Gol de penal en el último minuto..." rows="3"></textarea>
+            </div>
+
+            <button id="save-btn" class="action-btn save-btn">Guardar Resultado</button>
+            <p id="save-msg" class="success-msg"></p>
+            
+            <hr class="divider">
+            <a href="index.html" class="back-link">Volver al Salón de la Fama</a>
+        </div>
+    </main>
+
+    <script src="data.js"></script>
+    <script type="module" src="admin.js"></script>
+</body>
+</html>
