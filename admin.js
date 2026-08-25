@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyCzqBWyR7djQKkfwm9vc5SH7NxNdkKcTF8",
@@ -17,25 +17,38 @@ const db = getFirestore(app);
 document.addEventListener('DOMContentLoaded', async () => {
     const loginSection = document.getElementById('login-section');
     const dashboardSection = document.getElementById('dashboard-section');
+    const editorSections = document.getElementById('editor-sections');
     const loginBtn = document.getElementById('login-btn');
     const passwordInput = document.getElementById('admin-password');
     const loginError = document.getElementById('login-error');
     
     const teamSelect = document.getElementById('team-select');
-    const saveBtn = document.getElementById('save-btn');
+    
+    // Trofeos
+    const saveTrophyBtn = document.getElementById('save-trophy-btn');
     const saveMsg = document.getElementById('save-msg');
+    
+    // Perfil
+    const teamDescInput = document.getElementById('team-description-input');
+    const teamRivalName = document.getElementById('team-rival-name');
+    const teamRivalHistory = document.getElementById('team-rival-history');
+    const saveProfileBtn = document.getElementById('save-profile-btn');
+    const profileMsg = document.getElementById('profile-msg');
 
-    // Mantenemos esta variable para acceder a los equipos cargados desde Firebase
+    // Eliminar
+    const deleteList = document.getElementById('delete-list');
+
     let firebaseTeams = [];
+    let currentSelectedTeam = null;
 
     loginBtn.addEventListener('click', async () => {
-        if (passwordInput.value === 'copa1102') { // Podemos mejorar la seguridad luego
+        if (passwordInput.value === 'copa1102') {
             loginSection.style.display = 'none';
             loginError.textContent = 'Cargando datos de la base de datos...';
             loginError.style.color = '#fff';
             loginError.style.display = 'block';
 
-            await syncData(); // Nos aseguramos de que haya datos
+            await syncData(); 
             await loadTeamsFromFirebase();
             
             loginError.style.display = 'none';
@@ -46,44 +59,94 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
-    // Esta función sube los datos de tu data.js a Firebase SI Firebase está vacío
     async function syncData() {
         const querySnapshot = await getDocs(collection(db, "teams"));
         if (querySnapshot.empty) {
-            console.log("Firebase está vacío. Subiendo los datos desde data.js...");
-            // window.teams viene de data.js
             for (const team of window.teams) {
                 await setDoc(doc(db, "teams", team.id), team);
             }
-            console.log("¡Datos subidos con éxito!");
         }
     }
 
     async function loadTeamsFromFirebase() {
         firebaseTeams = [];
-        teamSelect.innerHTML = ''; // Limpiar select
+        teamSelect.innerHTML = '<option value="" disabled selected>-- Elige un equipo --</option>'; 
         const querySnapshot = await getDocs(collection(db, "teams"));
         
         querySnapshot.forEach((docSnap) => {
             const teamData = docSnap.data();
-            teamData.docId = docSnap.id; // Guardamos el ID del documento
+            teamData.docId = docSnap.id; 
             firebaseTeams.push(teamData);
         });
 
-        // Ordenarlos alfabéticamente en el panel
         firebaseTeams.sort((a, b) => a.name.localeCompare(b.name));
 
         firebaseTeams.forEach((team) => {
             const option = document.createElement('option');
-            option.value = team.docId; // Usamos el ID del documento de firebase
+            option.value = team.docId; 
             option.textContent = team.name;
             teamSelect.appendChild(option);
         });
     }
 
-    // Guardar el torneo en Firebase
-    saveBtn.addEventListener('click', async () => {
-        const teamDocId = teamSelect.value;
+    // Al seleccionar un equipo, mostrar las opciones
+    teamSelect.addEventListener('change', () => {
+        const selectedId = teamSelect.value;
+        currentSelectedTeam = firebaseTeams.find(t => t.docId === selectedId);
+        
+        if (currentSelectedTeam) {
+            editorSections.style.display = 'block';
+            
+            // Llenar perfil
+            teamDescInput.value = currentSelectedTeam.description || "";
+            if (currentSelectedTeam.rival) {
+                teamRivalName.value = currentSelectedTeam.rival.name || "";
+                teamRivalHistory.value = currentSelectedTeam.rival.history || "";
+            } else {
+                teamRivalName.value = "";
+                teamRivalHistory.value = "";
+            }
+
+            renderDeleteList();
+        }
+    });
+
+    // Guardar Perfil
+    saveProfileBtn.addEventListener('click', async () => {
+        if (!currentSelectedTeam) return;
+
+        saveProfileBtn.disabled = true;
+        saveProfileBtn.textContent = "Guardando...";
+
+        const teamRef = doc(db, "teams", currentSelectedTeam.docId);
+        
+        // Mantener el logo si ya existe
+        const rivalLogo = (currentSelectedTeam.rival && currentSelectedTeam.rival.logo) ? currentSelectedTeam.rival.logo : "";
+
+        await updateDoc(teamRef, {
+            description: teamDescInput.value,
+            rival: {
+                name: teamRivalName.value,
+                history: teamRivalHistory.value,
+                logo: rivalLogo
+            }
+        });
+
+        // Actualizar el objeto local
+        currentSelectedTeam.description = teamDescInput.value;
+        currentSelectedTeam.rival = { name: teamRivalName.value, history: teamRivalHistory.value, logo: rivalLogo };
+
+        profileMsg.textContent = "¡Perfil actualizado!";
+        saveProfileBtn.disabled = false;
+        saveProfileBtn.textContent = "Guardar Perfil";
+
+        setTimeout(() => profileMsg.textContent = "", 3000);
+    });
+
+    // Añadir Trofeo
+    saveTrophyBtn.addEventListener('click', async () => {
+        if (!currentSelectedTeam) return;
+
         const trophyType = document.getElementById('trophy-type').value;
         const name = document.getElementById('tournament-name').value;
         const result = document.getElementById('tournament-result').value;
@@ -95,41 +158,97 @@ document.addEventListener('DOMContentLoaded', async () => {
             return;
         }
 
-        const newRecord = {
-            name: name,
-            result: result,
-            note: note
-        };
+        const newRecord = { name, result, note };
 
-        saveBtn.disabled = true;
-        saveBtn.textContent = "Guardando en la nube...";
+        saveTrophyBtn.disabled = true;
+        saveTrophyBtn.textContent = "Guardando...";
 
         try {
-            const teamRef = doc(db, "teams", teamDocId);
-            
-            // Usamos arrayUnion para añadir el nuevo trofeo al array existente en Firebase
+            const teamRef = doc(db, "teams", currentSelectedTeam.docId);
             await updateDoc(teamRef, {
                 [trophyType]: arrayUnion(newRecord)
             });
 
+            // Actualizar localmente para la vista
+            if (!currentSelectedTeam[trophyType]) currentSelectedTeam[trophyType] = [];
+            currentSelectedTeam[trophyType].push(newRecord);
+
             saveMsg.style.color = '#2ecc71';
-            saveMsg.textContent = '¡Torneo guardado oficialmente en la nube!';
+            saveMsg.textContent = '¡Torneo añadido!';
             
-            // Limpiar campos
             document.getElementById('tournament-name').value = '';
             document.getElementById('tournament-result').value = '';
             document.getElementById('tournament-note').value = '';
+
+            renderDeleteList(); // Refrescar lista de borrado
         } catch (error) {
-            console.error("Error updating document: ", error);
             saveMsg.style.color = '#ff4d4d';
-            saveMsg.textContent = 'Hubo un error al guardar. Revisa la consola.';
+            saveMsg.textContent = 'Error al guardar.';
         }
 
-        saveBtn.disabled = false;
-        saveBtn.textContent = "Guardar Resultado";
+        saveTrophyBtn.disabled = false;
+        saveTrophyBtn.textContent = "Guardar Resultado";
 
-        setTimeout(() => {
-            saveMsg.textContent = '';
-        }, 4000);
+        setTimeout(() => saveMsg.textContent = '', 3000);
     });
+
+    // Renderizar lista para eliminar
+    function renderDeleteList() {
+        deleteList.innerHTML = '';
+        
+        const categories = [
+            { id: 'championships', label: '🥇 Campeonato' },
+            { id: 'runnerUps', label: '🥈 Subcampeón' },
+            { id: 'thirdPlaces', label: '🥉 Tercer Puesto' }
+        ];
+
+        let hasItems = false;
+
+        categories.forEach(cat => {
+            const items = currentSelectedTeam[cat.id] || [];
+            items.forEach(item => {
+                hasItems = true;
+                const li = document.createElement('li');
+                
+                const textSpan = document.createElement('span');
+                textSpan.textContent = `${cat.label} - ${item.name}`;
+
+                const delBtn = document.createElement('button');
+                delBtn.textContent = 'Borrar';
+                delBtn.classList.add('delete-btn');
+                delBtn.addEventListener('click', () => deleteTrophy(cat.id, item));
+
+                li.appendChild(textSpan);
+                li.appendChild(delBtn);
+                deleteList.appendChild(li);
+            });
+        });
+
+        if (!hasItems) {
+            deleteList.innerHTML = '<li style="justify-content:center; color:#777;">No hay trofeos registrados</li>';
+        }
+    }
+
+    async function deleteTrophy(trophyType, itemObject) {
+        if (!confirm(`¿Estás seguro de que deseas eliminar: ${itemObject.name}?`)) return;
+
+        const teamRef = doc(db, "teams", currentSelectedTeam.docId);
+        
+        try {
+            await updateDoc(teamRef, {
+                [trophyType]: arrayRemove(itemObject)
+            });
+
+            // Actualizar array local filtrándolo
+            currentSelectedTeam[trophyType] = currentSelectedTeam[trophyType].filter(
+                t => t.name !== itemObject.name || t.result !== itemObject.result || t.note !== itemObject.note
+            );
+            
+            renderDeleteList();
+            alert("Eliminado con éxito.");
+        } catch (error) {
+            console.error(error);
+            alert("Error al eliminar.");
+        }
+    }
 });

@@ -10,11 +10,11 @@
 <body>
     <header>
         <h1>⚙️ Panel de Administración</h1>
-        <p>Añade nuevos títulos, marcadores e historial a los equipos</p>
+        <p>Añade nuevos títulos, edita perfiles y elimina datos incorrectos</p>
     </header>
 
     <main class="admin-container">
-        <!-- Pantalla de Login (Falsa por ahora hasta que conectemos Firebase) -->
+        <!-- Pantalla de Login -->
         <div id="login-section" class="admin-card">
             <h2>Acceso Restringido</h2>
             <p>Ingresa la contraseña para editar los datos.</p>
@@ -23,46 +23,82 @@
             <p id="login-error" class="error-msg"></p>
         </div>
 
-        <!-- Panel de Control (Oculto hasta hacer login) -->
+        <!-- Panel de Control -->
         <div id="dashboard-section" class="admin-card" style="display: none;">
-            <h2>🏆 Registrar Nuevo Torneo</h2>
             
             <div class="form-group">
-                <label>Equipo:</label>
+                <label style="font-size: 1.2rem; color: var(--accent-color);">👉 Selecciona el equipo a editar:</label>
                 <select id="team-select">
+                    <option value="" disabled selected>-- Elige un equipo --</option>
                     <!-- Se llenará con JS -->
                 </select>
             </div>
 
-            <div class="form-group">
-                <label>Tipo de Logro:</label>
-                <select id="trophy-type">
-                    <option value="championships">🥇 Campeonato (Suma Estrella)</option>
-                    <option value="runnerUps">🥈 Subcampeonato</option>
-                    <option value="thirdPlaces">🥉 Tercer Puesto</option>
-                </select>
-            </div>
+            <div id="editor-sections" style="display: none;">
+                
+                <hr class="divider">
+                <h3 class="section-title">1. Añadir Trofeo</h3>
+                
+                <div class="form-group">
+                    <label>Tipo de Logro:</label>
+                    <select id="trophy-type">
+                        <option value="championships">🥇 Campeonato (Suma Estrella)</option>
+                        <option value="runnerUps">🥈 Subcampeonato</option>
+                        <option value="thirdPlaces">🥉 Tercer Puesto</option>
+                    </select>
+                </div>
 
-            <div class="form-group">
-                <label>Nombre de la Copa (Ej. Copa 1102):</label>
-                <input type="text" id="tournament-name" placeholder="Copa...">
-            </div>
+                <div class="form-group">
+                    <label>Nombre de la Copa (Ej. Copa 1102):</label>
+                    <input type="text" id="tournament-name" placeholder="Copa...">
+                </div>
 
-            <div class="form-group">
-                <label>Marcador / Resultado (Opcional):</label>
-                <input type="text" id="tournament-result" placeholder="Ej: FC Domo 3 - 1 Cristian FC">
-            </div>
+                <div class="form-group">
+                    <label>Marcador / Resultado (Opcional):</label>
+                    <input type="text" id="tournament-result" placeholder="Ej: FC Domo 3 - 1 Cristian FC">
+                </div>
 
-            <div class="form-group">
-                <label>Nota / Historia del partido:</label>
-                <textarea id="tournament-note" placeholder="Ej: Gol de penal en el último minuto..." rows="3"></textarea>
-            </div>
+                <div class="form-group">
+                    <label>Nota / Historia del partido:</label>
+                    <textarea id="tournament-note" placeholder="Ej: Gol de penal en el último minuto..." rows="2"></textarea>
+                </div>
 
-            <button id="save-btn" class="action-btn save-btn">Guardar Resultado</button>
-            <p id="save-msg" class="success-msg"></p>
+                <button id="save-trophy-btn" class="action-btn save-btn">Guardar Resultado</button>
+                <p id="save-msg" class="success-msg"></p>
+
+                <hr class="divider">
+                <h3 class="section-title">2. Editar Perfil del Equipo</h3>
+                
+                <div class="form-group">
+                    <label>Historia / Descripción:</label>
+                    <textarea id="team-description-input" rows="3"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Nombre del Máximo Rival:</label>
+                    <input type="text" id="team-rival-name">
+                </div>
+                
+                <div class="form-group">
+                    <label>Historial contra el Rival:</label>
+                    <input type="text" id="team-rival-history">
+                </div>
+                
+                <button id="save-profile-btn" class="action-btn save-btn">Guardar Perfil</button>
+                <p id="profile-msg" class="success-msg"></p>
+
+                <hr class="divider">
+                <h3 class="section-title">3. Eliminar Trofeos</h3>
+                <p style="color: #ccc; font-size: 0.9rem; margin-bottom: 15px;">Elimina campeonatos o medallas si te equivocaste al guardarlas.</p>
+                
+                <ul id="delete-list" class="delete-list">
+                    <!-- Lista generada por JS -->
+                </ul>
+
+            </div>
             
             <hr class="divider">
-            <a href="index.html" class="back-link">Volver al Salón de la Fama</a>
+            <a href="index.html" class="back-link">⬅ Volver al Salón de la Fama</a>
         </div>
     </main>
 

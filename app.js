@@ -109,9 +109,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // 2. Funciones del Modal
+    const modalStarsContainer = document.getElementById('modal-stars-container');
+
     function openModal(team) {
         modalLogo.src = team.logo;
         modalTeamName.textContent = team.name;
+
+        // Estrellas
+        modalStarsContainer.innerHTML = '';
+        const numStars = team.championships ? team.championships.length : 0;
+        for (let i = 0; i < numStars; i++) {
+            const starImg = document.createElement('img');
+            starImg.src = starImagePath;
+            starImg.alt = "Estrella";
+            starImg.classList.add('star-icon');
+            modalStarsContainer.appendChild(starImg);
+        }
         
         // Descripción
         modalTeamDesc.textContent = team.description || "Sin descripción disponible.";
