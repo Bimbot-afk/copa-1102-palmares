@@ -1,4 +1,4 @@
-const teams = [
+window.teams = [
     {
         id: "FC_Domo",
         name: "FC Domo",
