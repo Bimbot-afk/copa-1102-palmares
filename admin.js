@@ -243,7 +243,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             return;
         }
 
-        const newRecord = { name, result, note, opponentId };
+        const uniqueId = (editingTrophy && editingTrophy.id) ? editingTrophy.id : Date.now().toString();
+        const newRecord = { id: uniqueId, name, result, note, opponentId };
 
         saveTrophyBtn.disabled = true;
         saveTrophyBtn.textContent = "Guardando...";
@@ -258,7 +259,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 });
                 // Actualizar array local filtrándolo
                 currentSelectedTeam[editingTrophyType] = currentSelectedTeam[editingTrophyType].filter(
-                    t => t.name !== editingTrophy.name || t.result !== editingTrophy.result || t.note !== editingTrophy.note
+                    t => t.id ? (t.id !== editingTrophy.id) : (t.name !== editingTrophy.name || t.result !== editingTrophy.result || t.note !== editingTrophy.note)
                 );
             }
 
@@ -385,6 +386,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             // Actualizar array local filtrándolo
             currentSelectedTeam[type] = currentSelectedTeam[type].filter(t => {
                 if(type === 'badges') return t.title !== itemObject.title;
+                if (t.id && itemObject.id) return t.id !== itemObject.id;
                 return t.name !== itemObject.name || t.result !== itemObject.result || t.note !== itemObject.note;
             });
             
