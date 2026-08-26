@@ -86,14 +86,19 @@
                     </div>
                 </div>
 
-                <!-- Columna Derecha: Vitrina -->
-                <div class="modal-right vitrina-container">
-                    <div class="shelf shelf-oro" id="shelf-oro">
-                        <!-- Trophies appended by JS -->
+                <!-- Columna Derecha: Trofeos -->
+                <div class="modal-right">
+                    <div class="trophy-category">
+                        <h3>🥇 Campeonatos (<span id="count-champ">0</span>)</h3>
+                        <div class="trophy-grid" id="shelf-oro"></div>
                     </div>
-                    <div class="shelf shelf-plata" id="shelf-plata">
+                    <div class="trophy-category">
+                        <h3>🥈 Subcampeonatos (<span id="count-runner">0</span>)</h3>
+                        <div class="trophy-grid" id="shelf-plata"></div>
                     </div>
-                    <div class="shelf shelf-bronce" id="shelf-bronce">
+                    <div class="trophy-category">
+                        <h3>🥉 Terceros Puestos (<span id="count-third">0</span>)</h3>
+                        <div class="trophy-grid" id="shelf-bronce"></div>
                     </div>
                 </div>
             </div>
@@ -105,11 +110,9 @@
         <span class="close-popover" id="close-popover">&times;</span>
         <h4 id="popover-title">Copa</h4>
         <div class="popover-match">
-            <img id="popover-home-logo" src="" alt="Home">
             <div class="popover-score">
                 <span id="popover-result">3 - 1</span>
             </div>
-            <img id="popover-away-logo" src="" alt="Away">
         </div>
         <p id="popover-note"></p>
     </div>

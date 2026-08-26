@@ -175,12 +175,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     const shelfOro = document.getElementById('shelf-oro');
     const shelfPlata = document.getElementById('shelf-plata');
     const shelfBronce = document.getElementById('shelf-bronce');
-
+    
     // Popover
     const popover = document.getElementById('trophy-popover');
     const popTitle = document.getElementById('popover-title');
-    const popHomeLogo = document.getElementById('popover-home-logo');
-    const popAwayLogo = document.getElementById('popover-away-logo');
     const popResult = document.getElementById('popover-result');
     const popNote = document.getElementById('popover-note');
     const closePopoverBtn = document.getElementById('close-popover');
@@ -191,24 +189,24 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     function showPopover(event, trophy, ownerTeam) {
         popTitle.textContent = trophy.name;
-        popHomeLogo.src = ownerTeam.logo;
         
-        let awayLogoSrc = "";
+        let resultText = trophy.result || "";
+        
+        // Find opponent name if possible
         if (trophy.opponentId) {
-            const opp = window.teams.find(t => t.docId === trophy.opponentId);
-            if (opp) awayLogoSrc = opp.logo;
+            const opp = teams.find(t => t.docId === trophy.opponentId);
+            if (opp) {
+                resultText = `${ownerTeam.name} ${trophy.result || "? - ?"} ${opp.name}`;
+            }
         }
         
-        popAwayLogo.src = awayLogoSrc;
-        popAwayLogo.style.display = awayLogoSrc ? 'block' : 'none';
-        
-        popResult.textContent = trophy.result || "? - ?";
+        popResult.textContent = resultText;
         popNote.textContent = trophy.note || "";
         
         // Posicionar popover
         const rect = event.target.getBoundingClientRect();
-        popover.style.top = (rect.top + window.scrollY - 150) + 'px'; // Arriba del trofeo
-        popover.style.left = (rect.left + window.scrollX - 100) + 'px';
+        popover.style.top = (rect.top + window.scrollY - 100) + 'px'; // Arriba del trofeo
+        popover.style.left = (rect.left + window.scrollX - 80) + 'px';
         
         popover.classList.remove('hidden');
         event.stopPropagation();
