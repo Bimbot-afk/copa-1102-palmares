@@ -305,7 +305,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             badgesSection.style.display = 'none';
         }
 
-        // Vitrina (Repisas)
+        // Vitrina (Repisas y conteos)
+        countChamp.textContent = team.championships ? team.championships.length : 0;
+        countRunner.textContent = team.runnerUps ? team.runnerUps.length : 0;
+        countThird.textContent = team.thirdPlaces ? team.thirdPlaces.length : 0;
+
         shelfOro.innerHTML = '';
         shelfPlata.innerHTML = '';
         shelfBronce.innerHTML = '';
