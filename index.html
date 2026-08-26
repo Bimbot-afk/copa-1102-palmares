@@ -55,9 +55,8 @@
                 <div class="modal-left">
                     <div id="modal-stars-container" class="stars-container"></div>
                     <img id="modal-logo" src="" alt="Escudo">
-                    <h2 id="modal-team-name" style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                    <h2 id="modal-team-name">
                         <span id="name-text">Nombre del Equipo</span>
-                        <button id="pause-audio-btn" style="display:none; background:none; border:none; cursor:pointer; font-size:1.5rem;" title="Pausar/Reproducir Cántico">🔊</button>
                     </h2>
                     <p id="modal-team-desc" class="team-description"></p>
                     
@@ -68,9 +67,7 @@
                         
                         <!-- Mini tabla de stats -->
                         <div class="rival-stats-grid" id="modal-rival-stats">
-                            <div class="r-stat"><span class="r-val" id="r-p">0</span><span class="r-lbl">PJ</span></div>
                             <div class="r-stat"><span class="r-val" id="r-w">0</span><span class="r-lbl">PG</span></div>
-                            <div class="r-stat"><span class="r-val" id="r-d">0</span><span class="r-lbl">PE</span></div>
                             <div class="r-stat"><span class="r-val" id="r-l">0</span><span class="r-lbl">PP</span></div>
                         </div>
                     </div>
@@ -89,28 +86,32 @@
                     </div>
                 </div>
 
-                <!-- Columna Derecha: Stats -->
-                <div class="modal-right">
-                    <div class="trophy-section">
-                        <h3><img src="eFotball league/depositphotos_475516652-stock-illustration-uefa-europa-conference-league-cup-removebg-preview.png"
-                                class="icon-img" alt="🏆"> Campeonatos (<span id="count-champ">0</span>)</h3>
-                        <ul id="list-champ"></ul>
+                <!-- Columna Derecha: Vitrina -->
+                <div class="modal-right vitrina-container">
+                    <div class="shelf shelf-oro" id="shelf-oro">
+                        <!-- Trophies appended by JS -->
                     </div>
-
-                    <div class="trophy-section">
-                        <h3><img src="eFotball league/istockphoto-2100063573-612x612-removebg-preview.png"
-                                class="icon-img" alt="🥈"> Subcampeonatos (<span id="count-runner">0</span>)</h3>
-                        <ul id="list-runner"></ul>
+                    <div class="shelf shelf-plata" id="shelf-plata">
                     </div>
-
-                    <div class="trophy-section">
-                        <h3><img src="eFotball league/istockphoto-2100063573-612x61a2-removebg-preview.png"
-                                class="icon-img" alt="🥉"> Terceros Puestos (<span id="count-third">0</span>)</h3>
-                        <ul id="list-third"></ul>
+                    <div class="shelf shelf-bronce" id="shelf-bronce">
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- Popover para detalles del trofeo -->
+    <div id="trophy-popover" class="popover hidden">
+        <span class="close-popover" id="close-popover">&times;</span>
+        <h4 id="popover-title">Copa</h4>
+        <div class="popover-match">
+            <img id="popover-home-logo" src="" alt="Home">
+            <div class="popover-score">
+                <span id="popover-result">3 - 1</span>
+            </div>
+            <img id="popover-away-logo" src="" alt="Away">
+        </div>
+        <p id="popover-note"></p>
     </div>
 
     <script src="data.js"></script>

@@ -66,12 +66,53 @@ document.addEventListener('DOMContentLoaded', async () => {
             for (const team of window.teams) {
                 await setDoc(doc(db, "teams", team.id), team);
             }
+        } else {
+            // MIGRATION SCRIPT
+            const allTeams = [];
+            querySnapshot.forEach(docSnap => {
+                const t = docSnap.data();
+                t.docId = docSnap.id;
+                allTeams.push(t);
+            });
+
+            const teamNamesMap = {};
+            allTeams.forEach(t => teamNamesMap[t.name] = t.docId);
+
+            for (const team of allTeams) {
+                let needsUpdate = false;
+                const updatePayload = {};
+
+                ['championships', 'runnerUps', 'thirdPlaces'].forEach(cat => {
+                    if (team[cat]) {
+                        team[cat].forEach(trophy => {
+                            if (!trophy.opponentId && trophy.result) {
+                                // Find opponent name in result string
+                                for (const name in teamNamesMap) {
+                                    if (name !== team.name && trophy.result.includes(name)) {
+                                        trophy.opponentId = teamNamesMap[name];
+                                        needsUpdate = true;
+                                        break;
+                                    }
+                                }
+                            }
+                        });
+                        if (needsUpdate) updatePayload[cat] = team[cat];
+                    }
+                });
+
+                if (needsUpdate) {
+                    await updateDoc(doc(db, "teams", team.docId), updatePayload);
+                }
+            }
         }
     }
 
     async function loadTeamsFromFirebase() {
         firebaseTeams = [];
         teamSelect.innerHTML = '<option value="" disabled selected>-- Elige un equipo --</option>'; 
+        const oppSelect = document.getElementById('tournament-opponent');
+        oppSelect.innerHTML = '<option value="">-- Ninguno / Desconocido --</option>';
+
         const querySnapshot = await getDocs(collection(db, "teams"));
         
         querySnapshot.forEach((docSnap) => {
@@ -87,6 +128,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             option.value = team.docId; 
             option.textContent = team.name;
             teamSelect.appendChild(option);
+
+            const oppOption = document.createElement('option');
+            oppOption.value = team.docId; 
+            oppOption.textContent = team.name;
+            oppSelect.appendChild(oppOption);
         });
     }
 
@@ -100,19 +146,14 @@ document.addEventListener('DOMContentLoaded', async () => {
             
             // Llenar perfil
             teamDescInput.value = currentSelectedTeam.description || "";
-            document.getElementById('team-chant').value = currentSelectedTeam.chant || "";
 
             if (currentSelectedTeam.rival) {
                 teamRivalName.value = currentSelectedTeam.rival.name || "";
                 if (currentSelectedTeam.rival.stats) {
-                    document.getElementById('rival-p').value = currentSelectedTeam.rival.stats.p || "";
                     document.getElementById('rival-w').value = currentSelectedTeam.rival.stats.w || "";
-                    document.getElementById('rival-d').value = currentSelectedTeam.rival.stats.d || "";
                     document.getElementById('rival-l').value = currentSelectedTeam.rival.stats.l || "";
                 } else {
-                    document.getElementById('rival-p').value = "";
                     document.getElementById('rival-w').value = "";
-                    document.getElementById('rival-d').value = "";
                     document.getElementById('rival-l').value = "";
                 }
             } else {
@@ -137,12 +178,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         // Mantener el logo si ya existe
         const rivalLogo = (currentSelectedTeam.rival && currentSelectedTeam.rival.logo) ? currentSelectedTeam.rival.logo : "";
-        const chant = document.getElementById('team-chant').value;
 
         const rivalStats = {
-            p: document.getElementById('rival-p').value || 0,
             w: document.getElementById('rival-w').value || 0,
-            d: document.getElementById('rival-d').value || 0,
             l: document.getElementById('rival-l').value || 0
         };
 
@@ -151,7 +189,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         await updateDoc(teamRef, {
             description: teamDescInput.value,
-            chant: chant,
             biggestWin: bWin,
             biggestLoss: bLoss,
             rival: {
@@ -163,7 +200,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // Actualizar el objeto local
         currentSelectedTeam.description = teamDescInput.value;
-        currentSelectedTeam.chant = chant;
         currentSelectedTeam.biggestWin = bWin;
         currentSelectedTeam.biggestLoss = bLoss;
         currentSelectedTeam.rival = { name: teamRivalName.value, stats: rivalStats, logo: rivalLogo };
@@ -186,6 +222,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const name = document.getElementById('tournament-name').value;
         const result = document.getElementById('tournament-result').value;
         const note = document.getElementById('tournament-note').value;
+        const opponentId = document.getElementById('tournament-opponent').value;
 
         if (!name) {
             saveMsg.style.color = '#ff4d4d';
@@ -193,7 +230,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             return;
         }
 
-        const newRecord = { name, result, note };
+        const newRecord = { name, result, note, opponentId };
 
         saveTrophyBtn.disabled = true;
         saveTrophyBtn.textContent = "Guardando...";
@@ -227,6 +264,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('tournament-name').value = '';
             document.getElementById('tournament-result').value = '';
             document.getElementById('tournament-note').value = '';
+            document.getElementById('tournament-opponent').value = '';
 
             // Limpiar estado de edición
             editingTrophy = null;
@@ -307,6 +345,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('tournament-name').value = item.name || "";
         document.getElementById('tournament-result').value = item.result || "";
         document.getElementById('tournament-note').value = item.note || "";
+        document.getElementById('tournament-opponent').value = item.opponentId || "";
         
         editingTrophy = item;
         editingTrophyType = trophyType;

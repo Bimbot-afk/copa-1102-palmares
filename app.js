@@ -168,59 +168,58 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // 2. Funciones del Modal
+    // 2. Funciones del Modal y Vitrina
     const modalStarsContainer = document.getElementById('modal-stars-container');
     const modalContent = document.querySelector('.modal-content');
     const nameText = document.getElementById('name-text');
-    const pauseAudioBtn = document.getElementById('pause-audio-btn');
+    const shelfOro = document.getElementById('shelf-oro');
+    const shelfPlata = document.getElementById('shelf-plata');
+    const shelfBronce = document.getElementById('shelf-bronce');
 
-    let currentAudio = null;
-    let isPlaying = false;
+    // Popover
+    const popover = document.getElementById('trophy-popover');
+    const popTitle = document.getElementById('popover-title');
+    const popHomeLogo = document.getElementById('popover-home-logo');
+    const popAwayLogo = document.getElementById('popover-away-logo');
+    const popResult = document.getElementById('popover-result');
+    const popNote = document.getElementById('popover-note');
+    const closePopoverBtn = document.getElementById('close-popover');
 
-    pauseAudioBtn.addEventListener('click', () => {
-        if (currentAudio) {
-            if (isPlaying) {
-                currentAudio.pause();
-                pauseAudioBtn.textContent = '🔈';
-                isPlaying = false;
-            } else {
-                currentAudio.play();
-                pauseAudioBtn.textContent = '🔊';
-                isPlaying = true;
-            }
-        }
+    closePopoverBtn.addEventListener('click', () => {
+        popover.classList.add('hidden');
     });
 
+    function showPopover(event, trophy, ownerTeam) {
+        popTitle.textContent = trophy.name;
+        popHomeLogo.src = ownerTeam.logo;
+        
+        let awayLogoSrc = "";
+        if (trophy.opponentId) {
+            const opp = window.teams.find(t => t.docId === trophy.opponentId);
+            if (opp) awayLogoSrc = opp.logo;
+        }
+        
+        popAwayLogo.src = awayLogoSrc;
+        popAwayLogo.style.display = awayLogoSrc ? 'block' : 'none';
+        
+        popResult.textContent = trophy.result || "? - ?";
+        popNote.textContent = trophy.note || "";
+        
+        // Posicionar popover
+        const rect = event.target.getBoundingClientRect();
+        popover.style.top = (rect.top + window.scrollY - 150) + 'px'; // Arriba del trofeo
+        popover.style.left = (rect.left + window.scrollX - 100) + 'px';
+        
+        popover.classList.remove('hidden');
+        event.stopPropagation();
+    }
+
     function openModal(team, color) {
+        popover.classList.add('hidden');
         modalContent.style.setProperty('--team-color', color);
         
         modalLogo.src = team.logo;
         nameText.textContent = team.name;
-
-        // Reproducir Cántico
-        if (currentAudio) {
-            currentAudio.pause();
-            currentAudio = null;
-        }
-        
-        if (team.chant) {
-            pauseAudioBtn.style.display = 'block';
-            pauseAudioBtn.textContent = '🔊';
-            currentAudio = new Audio(team.chant);
-            currentAudio.volume = 0.5; // Volumen moderado
-            currentAudio.loop = true;  // Repetir mientras esté abierto
-            
-            // El navegador permite autoplay porque el usuario hizo click en la tarjeta
-            currentAudio.play().then(() => {
-                isPlaying = true;
-            }).catch(e => {
-                console.log("Autoplay bloqueado o archivo no encontrado", e);
-                pauseAudioBtn.textContent = '🔈';
-                isPlaying = false;
-            });
-        } else {
-            pauseAudioBtn.style.display = 'none';
-        }
 
         // Estrellas
         modalStarsContainer.innerHTML = '';
@@ -240,24 +239,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         const modalRivalSection = document.getElementById('modal-rival-section');
         const modalRivalName = document.getElementById('modal-rival-name');
         const modalRivalLogo = document.getElementById('modal-rival-logo');
-        const rp = document.getElementById('r-p');
         const rw = document.getElementById('r-w');
-        const rd = document.getElementById('r-d');
         const rl = document.getElementById('r-l');
 
-        if (team.rival && team.rival.name !== "N/A") {
+        if (team.rival && team.rival.name !== "N/A" && team.rival.name !== "") {
             modalRivalSection.style.display = 'flex';
             modalRivalLogo.src = team.rival.logo || "";
             modalRivalLogo.style.display = team.rival.logo ? 'block' : 'none';
             modalRivalName.textContent = team.rival.name;
             
             if (team.rival.stats) {
-                rp.textContent = team.rival.stats.p || 0;
                 rw.textContent = team.rival.stats.w || 0;
-                rd.textContent = team.rival.stats.d || 0;
                 rl.textContent = team.rival.stats.l || 0;
             } else {
-                rp.textContent = 0; rw.textContent = 0; rd.textContent = 0; rl.textContent = 0;
+                rw.textContent = 0; rl.textContent = 0;
             }
         } else {
             modalRivalSection.style.display = 'none';
@@ -312,55 +307,42 @@ document.addEventListener('DOMContentLoaded', async () => {
             badgesSection.style.display = 'none';
         }
 
-        // Limpiar listas
-        listChamp.innerHTML = '';
-        listRunner.innerHTML = '';
-        listThird.innerHTML = '';
+        // Vitrina (Repisas)
+        shelfOro.innerHTML = '';
+        shelfPlata.innerHTML = '';
+        shelfBronce.innerHTML = '';
 
-        // Llenar Listas de Trofeos
-        if (team.championships) {
-            countChamp.textContent = team.championships.length;
-            team.championships.forEach(t => {
-                const li = document.createElement('li');
-                li.innerHTML = `<strong>${t.name}</strong><br><small>${t.result || ''}</small><br><i>${t.note || ''}</i>`;
-                listChamp.appendChild(li);
-            });
-        }
+        const renderTrophies = (shelf, trophies, imageSrc) => {
+            if (trophies) {
+                trophies.forEach(t => {
+                    const img = document.createElement('img');
+                    img.src = imageSrc;
+                    img.classList.add('trophy-img');
+                    img.addEventListener('click', (e) => showPopover(e, t, team));
+                    shelf.appendChild(img);
+                });
+            }
+        };
 
-        if (team.runnerUps) {
-            countRunner.textContent = team.runnerUps.length;
-            team.runnerUps.forEach(t => {
-                const li = document.createElement('li');
-                li.innerHTML = `<strong>${t.name}</strong><br><small>${t.result || ''}</small><br><i>${t.note || ''}</i>`;
-                listRunner.appendChild(li);
-            });
-        }
-
-        if (team.thirdPlaces) {
-            countThird.textContent = team.thirdPlaces.length;
-            team.thirdPlaces.forEach(t => {
-                const li = document.createElement('li');
-                li.innerHTML = `<strong>${t.name}</strong><br><small>${t.result || ''}</small><br><i>${t.note || ''}</i>`;
-                listThird.appendChild(li);
-            });
-        }
+        renderTrophies(shelfOro, team.championships, "eFotball league/oro-removebg-preview.png");
+        renderTrophies(shelfPlata, team.runnerUps, "eFotball league/plata.png");
+        renderTrophies(shelfBronce, team.thirdPlaces, "eFotball league/bromce-removebg-preview.png");
 
         modal.style.display = 'flex';
     }
 
-    // 3. Cerrar Modal y apagar audio
+    // 3. Cerrar Modal
     function closeModal() {
         modal.style.display = 'none';
-        if (currentAudio) {
-            currentAudio.pause();
-            currentAudio.currentTime = 0;
-            currentAudio = null;
-        }
+        popover.classList.add('hidden');
     }
 
     closeBtn.addEventListener('click', closeModal);
     window.addEventListener('click', (e) => {
         if (e.target === modal) closeModal();
+        else if (!popover.contains(e.target) && !e.target.classList.contains('trophy-img')) {
+            popover.classList.add('hidden');
+        }
     });
 
     function fillList(ulElement, countElement, dataArray) {

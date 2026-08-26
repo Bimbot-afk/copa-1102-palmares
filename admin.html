@@ -53,9 +53,18 @@
                     <input type="text" id="tournament-name" placeholder="Copa...">
                 </div>
 
-                <div class="form-group">
-                    <label>Marcador / Resultado (Opcional):</label>
-                    <input type="text" id="tournament-result" placeholder="Ej: FC Domo 3 - 1 Cristian FC">
+                <div class="form-group" style="display: flex; gap: 10px;">
+                    <div style="flex: 1;">
+                        <label>Rival en la Final/Partido:</label>
+                        <select id="tournament-opponent">
+                            <option value="">-- Ninguno / Desconocido --</option>
+                            <!-- JS fill -->
+                        </select>
+                    </div>
+                    <div style="flex: 1;">
+                        <label>Marcador Exacto:</label>
+                        <input type="text" id="tournament-result" placeholder="Ej: 3 - 1">
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -80,12 +89,10 @@
                 </div>
                 
                 <div class="form-group">
-                    <label>Estadísticas vs Máximo Rival (Jugados / Ganados / Empates / Perdidos):</label>
+                    <label>Estadísticas vs Máximo Rival (Ganados / Perdidos):</label>
                     <div style="display: flex; gap: 10px;">
-                        <input type="number" id="rival-p" placeholder="PJ" title="Partidos Jugados">
-                        <input type="number" id="rival-w" placeholder="PG" title="Partidos Ganados">
-                        <input type="number" id="rival-d" placeholder="PE" title="Partidos Empatados">
-                        <input type="number" id="rival-l" placeholder="PP" title="Partidos Perdidos">
+                        <input type="number" id="rival-w" placeholder="PG" title="Partidos Ganados" min="0">
+                        <input type="number" id="rival-l" placeholder="PP" title="Partidos Perdidos" min="0">
                     </div>
                 </div>
 
@@ -93,12 +100,6 @@
                     <label>Récords (Opcional):</label>
                     <input type="text" id="team-biggest-win" placeholder="Mayor goleada hecha (Ej: 5-0 vs Cristian FC)" style="margin-bottom: 8px;">
                     <input type="text" id="team-biggest-loss" placeholder="Mayor goleada recibida (Ej: 0-6 vs AC Cagua)">
-                </div>
-
-                <div class="form-group">
-                    <label>Cántico de Estadio (URL del archivo MP3 o Audio):</label>
-                    <input type="text" id="team-chant" placeholder="Ej: https://.../cancion.mp3">
-                    <small style="color:#aaa;">Puedes buscar un MP3 en internet, o guardarlo en la carpeta y poner "audio/nombre.mp3"</small>
                 </div>
                 
                 <button id="save-profile-btn" class="action-btn save-btn">Guardar Perfil</button>
