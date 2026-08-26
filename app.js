@@ -196,7 +196,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (trophy.opponentId) {
             const opp = teams.find(t => t.docId === trophy.opponentId);
             if (opp) {
-                resultText = `${ownerTeam.name} ${trophy.result || "? - ?"} ${opp.name}`;
+                const hasOwner = resultText.toLowerCase().includes(ownerTeam.name.toLowerCase());
+                const hasOpp = resultText.toLowerCase().includes(opp.name.toLowerCase());
+                
+                if (!hasOwner && !hasOpp) {
+                    resultText = `${ownerTeam.name} ${resultText} ${opp.name}`;
+                }
             }
         }
         
