@@ -551,3 +551,51 @@ header p {
     height: 95px; /* Plata cup has more padding, needs to be taller */
     margin: -12px 0; /* Adjust vertical spacing to fit grid nicely */
 }
+/* EL MAS GRANDE DE TODOS (GOAT) */
+.goat-section {
+    text-align: center;
+    margin: 50px auto;
+    padding: 30px;
+    background: radial-gradient(circle, rgba(218,165,32,0.15) 0%, transparent 60%);
+    max-width: 600px;
+    border-radius: 20px;
+}
+.goat-title {
+    color: gold;
+    font-size: 2rem;
+    margin-bottom: 30px;
+    text-shadow: 0 0 10px rgba(218,165,32,0.8);
+    font-weight: 900;
+}
+.laurel-wreath {
+    position: relative;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    /* Laurel simulation */
+    box-shadow: inset 0 0 20px gold, 0 0 30px gold;
+    border: 4px solid #ffd700;
+    margin-bottom: 20px;
+    background-color: rgba(0,0,0,0.5);
+}
+.goat-img {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    filter: drop-shadow(0 10px 10px rgba(0,0,0,0.8));
+    animation: float 3s ease-in-out infinite;
+}
+.goat-name {
+    font-size: 1.8rem;
+    color: #fff;
+    margin: 0;
+    text-shadow: 0 2px 5px #000;
+}
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+}

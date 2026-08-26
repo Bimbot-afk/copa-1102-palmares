@@ -111,6 +111,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         rankingBody.appendChild(tr);
     });
 
+    // Populate GOAT Section
+    if (rankedTeams.length > 0) {
+        const goat = rankedTeams[0];
+        document.getElementById('goat-logo').src = goat.logo;
+        document.getElementById('goat-name').textContent = goat.name;
+        document.getElementById('goat-section').style.display = 'block';
+    }
+
     // Map of team colors
     const teamColors = {
         "FC_Domo": "#a50044",           // Barcelona (Red/Dark)
@@ -245,11 +253,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         const rw = document.getElementById('r-w');
         const rl = document.getElementById('r-l');
 
-        if (team.rival && team.rival.name !== "N/A" && team.rival.name !== "") {
+        let rivalTeam = null;
+        if (team.rival) {
+            if (team.rival.id) {
+                rivalTeam = teams.find(t => t.docId === team.rival.id);
+            } else if (team.rival.name && team.rival.name !== "N/A") {
+                // Fallback a nombre viejo
+                rivalTeam = teams.find(t => t.name === team.rival.name);
+            }
+        }
+
+        if (rivalTeam) {
             modalRivalSection.style.display = 'block';
-            modalRivalLogo.src = team.rival.logo || "";
-            modalRivalLogo.style.display = team.rival.logo ? 'block' : 'none';
-            modalRivalName.textContent = team.rival.name;
+            modalRivalLogo.src = rivalTeam.logo || "";
+            modalRivalLogo.style.display = rivalTeam.logo ? 'block' : 'none';
+            modalRivalName.textContent = rivalTeam.name;
             
             if (team.rival.stats) {
                 rw.textContent = team.rival.stats.w || 0;

@@ -30,8 +30,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     // Perfil
     const teamDescInput = document.getElementById('team-description-input');
-    const teamRivalName = document.getElementById('team-rival-name');
-    const teamRivalHistory = document.getElementById('team-rival-history');
+    const teamRivalSelect = document.getElementById('team-rival-select');
     const saveProfileBtn = document.getElementById('save-profile-btn');
     const profileMsg = document.getElementById('profile-msg');
 
@@ -42,7 +41,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     let currentSelectedTeam = null;
 
     loginBtn.addEventListener('click', async () => {
-        if (passwordInput.value === 'copa1102') {
+        const p = passwordInput.value;
+        if (p === 'admin1102') {
             loginSection.style.display = 'none';
             loginError.textContent = 'Cargando datos de la base de datos...';
             loginError.style.color = '#fff';
@@ -112,6 +112,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         teamSelect.innerHTML = '<option value="" disabled selected>-- Elige un equipo --</option>'; 
         const oppSelect = document.getElementById('tournament-opponent');
         oppSelect.innerHTML = '<option value="">-- Ninguno / Desconocido --</option>';
+        teamRivalSelect.innerHTML = '<option value="">-- Ninguno --</option>';
 
         const querySnapshot = await getDocs(collection(db, "teams"));
         
@@ -133,6 +134,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             oppOption.value = team.docId; 
             oppOption.textContent = team.name;
             oppSelect.appendChild(oppOption);
+            
+            const rivOption = document.createElement('option');
+            rivOption.value = team.docId; 
+            rivOption.textContent = team.name;
+            teamRivalSelect.appendChild(rivOption);
         });
     }
 
@@ -148,7 +154,17 @@ document.addEventListener('DOMContentLoaded', async () => {
             teamDescInput.value = currentSelectedTeam.description || "";
 
             if (currentSelectedTeam.rival) {
-                teamRivalName.value = currentSelectedTeam.rival.name || "";
+                // Compatible con formato viejo (name) o nuevo (id)
+                if (currentSelectedTeam.rival.id) {
+                    teamRivalSelect.value = currentSelectedTeam.rival.id;
+                } else if (currentSelectedTeam.rival.name) {
+                    // Tratar de mapear nombre viejo a ID
+                    const oldRival = firebaseTeams.find(t => t.name === currentSelectedTeam.rival.name);
+                    teamRivalSelect.value = oldRival ? oldRival.docId : "";
+                } else {
+                    teamRivalSelect.value = "";
+                }
+                
                 if (currentSelectedTeam.rival.stats) {
                     document.getElementById('rival-w').value = currentSelectedTeam.rival.stats.w || "";
                     document.getElementById('rival-l').value = currentSelectedTeam.rival.stats.l || "";
@@ -157,7 +173,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     document.getElementById('rival-l').value = "";
                 }
             } else {
-                teamRivalName.value = "";
+                teamRivalSelect.value = "";
             }
             
             document.getElementById('team-biggest-win').value = currentSelectedTeam.biggestWin || "";
@@ -176,9 +192,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const teamRef = doc(db, "teams", currentSelectedTeam.docId);
         
-        // Mantener el logo si ya existe
-        const rivalLogo = (currentSelectedTeam.rival && currentSelectedTeam.rival.logo) ? currentSelectedTeam.rival.logo : "";
-
         const rivalStats = {
             w: document.getElementById('rival-w').value || 0,
             l: document.getElementById('rival-l').value || 0
@@ -186,15 +199,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const bWin = document.getElementById('team-biggest-win').value;
         const bLoss = document.getElementById('team-biggest-loss').value;
+        const rId = teamRivalSelect.value;
 
         await updateDoc(teamRef, {
             description: teamDescInput.value,
             biggestWin: bWin,
             biggestLoss: bLoss,
             rival: {
-                name: teamRivalName.value,
-                stats: rivalStats,
-                logo: rivalLogo
+                id: rId,
+                stats: rivalStats
             }
         });
 
@@ -202,7 +215,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         currentSelectedTeam.description = teamDescInput.value;
         currentSelectedTeam.biggestWin = bWin;
         currentSelectedTeam.biggestLoss = bLoss;
-        currentSelectedTeam.rival = { name: teamRivalName.value, stats: rivalStats, logo: rivalLogo };
+        currentSelectedTeam.rival = { id: rId, stats: rivalStats };
 
         profileMsg.textContent = "¡Perfil actualizado!";
         saveProfileBtn.disabled = false;
