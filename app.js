@@ -67,16 +67,32 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Ordenar los equipos para que los más ganadores queden al principio
     teams.sort((a, b) => (b.championships ? b.championships.length : 0) - (a.championships ? a.championships.length : 0));
 
+    // Map of team colors
+    const teamColors = {
+        "FC_Domo": "#a50044",           // Barcelona (Red/Dark)
+        "FC_Mirezra": "#ffffff",        // Real Madrid (White)
+        "Deportivo_Murillo": "#ed1a24", // River (Red)
+        "United_Andres": "#da291c",     // Man Utd (Red)
+        "Inter_Gerrard": "#009a44",     // Nacional (Green)
+        "america_de_huertas": "#e00000",// America (Red)
+        "Cristian_FC": "#cccccc",       // Municipal (White/Grey)
+        "AC_cagua": "#444444",          // Dark Grey/Black
+        "Alianza_Meneses": "#f4d03f"    // Yellow
+    };
+
     // 1. Generar la cuadrícula de equipos
     function renderTeams() {
         teams.forEach(team => {
             const card = document.createElement('div');
             card.classList.add('team-card');
+            
+            const color = team.color || teamColors[team.id] || '#f39c12';
+            card.style.setProperty('--team-color', color);
 
             // Crear contenedor de estrellas
             const starsDiv = document.createElement('div');
             starsDiv.classList.add('stars-container');
-            const numStars = team.championships.length;
+            const numStars = team.championships ? team.championships.length : 0;
 
             for (let i = 0; i < numStars; i++) {
                 const starImg = document.createElement('img');
@@ -102,7 +118,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             card.appendChild(name);
 
             // Evento click para abrir modal
-            card.addEventListener('click', () => openModal(team));
+            card.addEventListener('click', () => openModal(team, color));
 
             grid.appendChild(card);
         });
@@ -110,8 +126,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // 2. Funciones del Modal
     const modalStarsContainer = document.getElementById('modal-stars-container');
+    const modalContent = document.querySelector('.modal-content');
 
-    function openModal(team) {
+    function openModal(team, color) {
+        modalContent.style.setProperty('--team-color', color);
+        
         modalLogo.src = team.logo;
         modalTeamName.textContent = team.name;
 

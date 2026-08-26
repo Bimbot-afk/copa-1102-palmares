@@ -44,11 +44,14 @@ header p {
     flex-direction: column;
     align-items: center;
     position: relative;
+    border: 1px solid transparent;
 }
 
 .team-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(243, 156, 18, 0.2);
+    /* Glow using the team color, falls back to accent */
+    box-shadow: 0 8px 25px var(--team-color, rgba(243, 156, 18, 0.4));
+    border-color: var(--team-color, transparent);
 }
 
 .stars-container {
@@ -66,10 +69,10 @@ header p {
 }
 
 .team-logo {
-    width: 100px;
-    height: 100px;
+    width: 90px;
+    height: 90px;
     object-fit: contain;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
 }
 
 .team-name {
@@ -94,16 +97,23 @@ header p {
 
 .modal-content {
     background-color: var(--card-bg);
+    /* Fondo con color base + franjas en la esquina sup-der e inf-izq usando var(--team-color) */
+    background-image: 
+        linear-gradient(225deg, var(--team-color, transparent) 0%, var(--team-color, transparent) 10px, transparent 10px, transparent 20px, var(--team-color, transparent) 20px, var(--team-color, transparent) 30px, transparent 30px),
+        linear-gradient(45deg, var(--team-color, transparent) 0%, var(--team-color, transparent) 10px, transparent 10px, transparent 20px, var(--team-color, transparent) 20px, var(--team-color, transparent) 30px, transparent 30px);
+    background-size: 100px 100px;
+    background-position: top right, bottom left;
+    background-repeat: no-repeat;
+    
     padding: 30px;
     border-radius: 15px;
-    max-width: 800px;
-    /* Aumentado para 2 columnas */
+    max-width: 800px; /* Aumentado para 2 columnas */
     width: 90%;
     max-height: 80vh;
     overflow-y: auto;
     position: relative;
     border: 1px solid #333;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     text-align: left;
 }
 
