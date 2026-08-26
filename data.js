@@ -51,6 +51,7 @@ window.teams = [
         runnerUps: [
             { name: "Copa 1102", result: "Cristian FC 1 - 0 United Andres", note: "No me acuerdo es un resultado para llenar" },
             { name: "Copa 1102", result: "Cristian FC 1 - 0 United Andres", note: "No me acuerdo es un resultado para llenar" },
+            { name: "Copa 1102", result: "Alianza Meneses 2 - 1 United Andres ", note: "Que triste" }
         ],
         thirdPlaces: []
     },
@@ -102,9 +103,7 @@ window.teams = [
         championships: [
             { name: "Copa 1102", result: "AC Cagua 2 - 1 Cristian FC", note: "Sorpresa total" }
         ],
-        runnerUps: [
-            { name: "Copa 1102", result: "AC Cagua 1 - 2 Alianza Meneses", note: "Que triste fue verlos perder" }
-        ],
+        runnerUps: [],
         thirdPlaces: []
     },
     {
@@ -114,7 +113,7 @@ window.teams = [
         description: "El jogo bonito hecho equipo, vistozo y divertido de ver, siempre es favorito.",
         rival: { name: "FC Domo", history: "Jugados: 0 | Ganados: 0 | Perdidos: 0", logo: "eFotball league/FC_Barcelona_old_logo.png" },
         championships: [
-            { name: "Copa 1102", result: "Alianza Meneses 2 - 1 AC Cagua ", note: "Elimino al mas grande: Deportivo Murillo" },
+            { name: "Copa 1102", result: "Alianza Meneses 2 - 1 United Andres ", note: "Aura" },
             { name: "Copa 1102", result: "Alianza Meneses 1 - 0 Cristian FC", note: "No me acuerdo es un resultado para llenar" }
         ],
         runnerUps: [

@@ -143,7 +143,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         setTimeout(() => profileMsg.textContent = "", 3000);
     });
 
-    // Añadir Trofeo
+    // Añadir o Actualizar Trofeo
+    let editingTrophy = null;
+    let editingTrophyType = null;
+
     saveTrophyBtn.addEventListener('click', async () => {
         if (!currentSelectedTeam) return;
 
@@ -165,6 +168,19 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         try {
             const teamRef = doc(db, "teams", currentSelectedTeam.docId);
+            
+            // Si estamos editando, primero borramos el viejo
+            if (editingTrophy) {
+                await updateDoc(teamRef, {
+                    [editingTrophyType]: arrayRemove(editingTrophy)
+                });
+                // Actualizar array local filtrándolo
+                currentSelectedTeam[editingTrophyType] = currentSelectedTeam[editingTrophyType].filter(
+                    t => t.name !== editingTrophy.name || t.result !== editingTrophy.result || t.note !== editingTrophy.note
+                );
+            }
+
+            // Guardamos el nuevo/actualizado
             await updateDoc(teamRef, {
                 [trophyType]: arrayUnion(newRecord)
             });
@@ -174,25 +190,31 @@ document.addEventListener('DOMContentLoaded', async () => {
             currentSelectedTeam[trophyType].push(newRecord);
 
             saveMsg.style.color = '#2ecc71';
-            saveMsg.textContent = '¡Torneo añadido!';
+            saveMsg.textContent = editingTrophy ? '¡Torneo actualizado!' : '¡Torneo añadido!';
             
             document.getElementById('tournament-name').value = '';
             document.getElementById('tournament-result').value = '';
             document.getElementById('tournament-note').value = '';
 
-            renderDeleteList(); // Refrescar lista de borrado
+            // Limpiar estado de edición
+            editingTrophy = null;
+            editingTrophyType = null;
+            saveTrophyBtn.textContent = "Guardar Resultado";
+            saveTrophyBtn.style.backgroundColor = "";
+
+            renderDeleteList(); // Refrescar lista
         } catch (error) {
             saveMsg.style.color = '#ff4d4d';
             saveMsg.textContent = 'Error al guardar.';
         }
 
         saveTrophyBtn.disabled = false;
-        saveTrophyBtn.textContent = "Guardar Resultado";
+        if (!editingTrophy) saveTrophyBtn.textContent = "Guardar Resultado";
 
         setTimeout(() => saveMsg.textContent = '', 3000);
     });
 
-    // Renderizar lista para eliminar
+    // Renderizar lista para eliminar / editar
     function renderDeleteList() {
         deleteList.innerHTML = '';
         
@@ -213,13 +235,25 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const textSpan = document.createElement('span');
                 textSpan.textContent = `${cat.label} - ${item.name}`;
 
+                const buttonsDiv = document.createElement('div');
+                buttonsDiv.style.display = 'flex';
+                buttonsDiv.style.gap = '5px';
+
+                const editBtn = document.createElement('button');
+                editBtn.textContent = 'Editar';
+                editBtn.classList.add('edit-btn');
+                editBtn.addEventListener('click', () => editTrophy(cat.id, item));
+
                 const delBtn = document.createElement('button');
                 delBtn.textContent = 'Borrar';
                 delBtn.classList.add('delete-btn');
                 delBtn.addEventListener('click', () => deleteTrophy(cat.id, item));
 
+                buttonsDiv.appendChild(editBtn);
+                buttonsDiv.appendChild(delBtn);
+
                 li.appendChild(textSpan);
-                li.appendChild(delBtn);
+                li.appendChild(buttonsDiv);
                 deleteList.appendChild(li);
             });
         });
@@ -227,6 +261,23 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (!hasItems) {
             deleteList.innerHTML = '<li style="justify-content:center; color:#777;">No hay trofeos registrados</li>';
         }
+    }
+
+    function editTrophy(trophyType, item) {
+        document.getElementById('trophy-type').value = trophyType;
+        document.getElementById('tournament-name').value = item.name || "";
+        document.getElementById('tournament-result').value = item.result || "";
+        document.getElementById('tournament-note').value = item.note || "";
+        
+        editingTrophy = item;
+        editingTrophyType = trophyType;
+
+        saveTrophyBtn.textContent = "Actualizar Resultado";
+        saveTrophyBtn.style.backgroundColor = "#f39c12"; // Destacar que está en modo edición
+        saveTrophyBtn.style.color = "#000";
+        
+        // Hacer scroll hacia el formulario
+        window.scrollTo({ top: document.getElementById('editor-sections').offsetTop - 20, behavior: 'smooth' });
     }
 
     async function deleteTrophy(trophyType, itemObject) {
