@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getFirestore, collection, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyCzqBWyR7djQKkfwm9vc5SH7NxNdkKcTF8",
@@ -43,15 +43,25 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Muestra algo mientras carga
     grid.innerHTML = '<p style="color:white; font-size: 1.2rem; grid-column: 1 / -1; text-align: center;">Cargando datos desde la nube...</p>';
 
+    // Cargar Noticias
+    try {
+        const globalSnap = await getDoc(doc(db, "settings", "global"));
+        if (globalSnap.exists() && globalSnap.data().breakingNews) {
+            document.getElementById('news-marquee').textContent = globalSnap.data().breakingNews;
+            document.getElementById('news-container').style.display = 'flex';
+        }
+    } catch (e) {
+        console.error("No se pudieron cargar las noticias", e);
+    }
+
     // Descargar equipos desde Firebase
     let teams = [];
     try {
         const querySnapshot = await getDocs(collection(db, "teams"));
-        querySnapshot.forEach((doc) => {
-            teams.push(doc.data());
+        querySnapshot.forEach((docSnap) => {
+            teams.push(docSnap.data());
         });
         
-        // Si Firebase está vacío, mostramos un mensaje
         if (teams.length === 0) {
             grid.innerHTML = '<p style="color:white;">Base de datos vacía. Entra al Panel de Administrador para subir los datos.</p>';
             return;
@@ -62,10 +72,44 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
     
-    grid.innerHTML = ''; // Limpiamos el mensaje de carga
+    grid.innerHTML = ''; 
 
-    // Ordenar los equipos para que los más ganadores queden al principio
+    // Ordenar los equipos para el grid
     teams.sort((a, b) => (b.championships ? b.championships.length : 0) - (a.championships ? a.championships.length : 0));
+
+    // Generar Ranking
+    const rankingBody = document.getElementById('ranking-body');
+    const rankedTeams = [...teams].map(team => {
+        const gold = team.championships ? team.championships.length : 0;
+        const silver = team.runnerUps ? team.runnerUps.length : 0;
+        const bronze = team.thirdPlaces ? team.thirdPlaces.length : 0;
+        return {
+            ...team,
+            points: (gold * 3) + (silver * 2) + (bronze * 1),
+            gold, silver, bronze
+        };
+    }).sort((a, b) => {
+        if (b.points !== a.points) return b.points - a.points;
+        if (b.gold !== a.gold) return b.gold - a.gold;
+        if (b.silver !== a.silver) return b.silver - a.silver;
+        return b.bronze - a.bronze;
+    });
+
+    rankedTeams.forEach((team, index) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${index + 1}</td>
+            <td style="text-align: left; display: flex; align-items: center; gap: 10px;">
+                <img src="${team.logo}" width="25" height="25" style="object-fit: contain;">
+                ${team.name}
+            </td>
+            <td><strong>${team.points}</strong></td>
+            <td>${team.gold}</td>
+            <td>${team.silver}</td>
+            <td>${team.bronze}</td>
+        `;
+        rankingBody.appendChild(tr);
+    });
 
     // Map of team colors
     const teamColors = {

@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, arrayUnion, arrayRemove, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyCzqBWyR7djQKkfwm9vc5SH7NxNdkKcTF8",
@@ -50,6 +50,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             await syncData(); 
             await loadTeamsFromFirebase();
+            await loadNews();
             
             loginError.style.display = 'none';
             dashboardSection.style.display = 'block';
@@ -302,4 +303,37 @@ document.addEventListener('DOMContentLoaded', async () => {
             alert("Error al eliminar.");
         }
     }
+
+    // Noticias
+    const newsInput = document.getElementById('news-text');
+    const saveNewsBtn = document.getElementById('save-news-btn');
+    const newsMsg = document.getElementById('news-msg');
+    const globalSettingsRef = doc(db, "settings", "global");
+
+    async function loadNews() {
+        const globalSnap = await getDoc(globalSettingsRef);
+        if (globalSnap.exists() && globalSnap.data().breakingNews) {
+            newsInput.value = globalSnap.data().breakingNews;
+        }
+    }
+
+    saveNewsBtn.addEventListener('click', async () => {
+        const text = newsInput.value;
+        saveNewsBtn.textContent = "Publicando...";
+        saveNewsBtn.disabled = true;
+
+        try {
+            await setDoc(globalSettingsRef, { breakingNews: text }, { merge: true });
+            newsMsg.style.color = "#2ecc71";
+            newsMsg.textContent = "¡Noticia publicada!";
+        } catch (error) {
+            newsMsg.style.color = "#ff4d4d";
+            newsMsg.textContent = "Error al publicar la noticia.";
+        }
+
+        saveNewsBtn.textContent = "Publicar Noticia";
+        saveNewsBtn.disabled = false;
+        setTimeout(() => newsMsg.textContent = "", 3000);
+    });
+
 });

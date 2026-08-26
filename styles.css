@@ -117,6 +117,67 @@ header p {
     text-align: left;
 }
 
+/* News Ticker */
+.news-ticker {
+    background-color: var(--accent-color);
+    color: #000;
+    padding: 8px 15px;
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    margin-bottom: 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(243, 156, 18, 0.3);
+}
+.news-label {
+    background-color: #000;
+    color: var(--accent-color);
+    padding: 4px 10px;
+    margin-right: 15px;
+    border-radius: 5px;
+    white-space: nowrap;
+}
+.news-content {
+    font-size: 1.1rem;
+}
+
+/* Ranking Table */
+.ranking-section {
+    margin-top: 50px;
+    background-color: var(--card-bg);
+    padding: 20px;
+    border-radius: 15px;
+    border: 1px solid #333;
+}
+.ranking-section h2 {
+    color: var(--accent-color);
+    margin-top: 0;
+}
+.table-responsive {
+    overflow-x: auto;
+}
+.ranking-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+.ranking-table th, .ranking-table td {
+    padding: 12px 15px;
+    text-align: center;
+    border-bottom: 1px solid #333;
+}
+.ranking-table th {
+    background-color: #2a2a2a;
+    color: var(--accent-color);
+    font-weight: bold;
+}
+.ranking-table tr:hover {
+    background-color: #222;
+}
+.ranking-table tr:nth-child(1) td {
+    background-color: rgba(243, 156, 18, 0.1);
+}
+
 .close-button {
     color: #aaa;
     position: absolute;

@@ -14,10 +14,36 @@
         <p>"La grandez se escribe a cada minuto"</p>
     </header>
 
+    <div class="news-ticker" id="news-container" style="display: none;">
+        <span class="news-label">🚨 ÚLTIMA HORA</span>
+        <marquee id="news-marquee" class="news-content"></marquee>
+    </div>
+
     <main>
         <div class="teams-grid" id="teams-grid">
             <!-- Los escudos se generarán aquí con JavaScript -->
         </div>
+
+        <section class="ranking-section">
+            <h2>⭐ Ranking Histórico Oficial</h2>
+            <div class="table-responsive">
+                <table class="ranking-table">
+                    <thead>
+                        <tr>
+                            <th>Pos</th>
+                            <th>Equipo</th>
+                            <th>Pts</th>
+                            <th title="Campeonatos (3 pts)">🥇</th>
+                            <th title="Subcampeonatos (2 pts)">🥈</th>
+                            <th title="Terceros Puestos (1 pt)">🥉</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ranking-body">
+                        <!-- Llenado con JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
     </main>
 
     <!-- Modal para detalles del equipo -->
