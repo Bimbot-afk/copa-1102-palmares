@@ -100,6 +100,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             
             // Llenar perfil
             teamDescInput.value = currentSelectedTeam.description || "";
+            document.getElementById('team-chant').value = currentSelectedTeam.chant || "";
+
             if (currentSelectedTeam.rival) {
                 teamRivalName.value = currentSelectedTeam.rival.name || "";
                 teamRivalHistory.value = currentSelectedTeam.rival.history || "";
@@ -123,9 +125,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         // Mantener el logo si ya existe
         const rivalLogo = (currentSelectedTeam.rival && currentSelectedTeam.rival.logo) ? currentSelectedTeam.rival.logo : "";
+        const chant = document.getElementById('team-chant').value;
 
         await updateDoc(teamRef, {
             description: teamDescInput.value,
+            chant: chant,
             rival: {
                 name: teamRivalName.value,
                 history: teamRivalHistory.value,
@@ -135,6 +139,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // Actualizar el objeto local
         currentSelectedTeam.description = teamDescInput.value;
+        currentSelectedTeam.chant = chant;
         currentSelectedTeam.rival = { name: teamRivalName.value, history: teamRivalHistory.value, logo: rivalLogo };
 
         profileMsg.textContent = "¡Perfil actualizado!";

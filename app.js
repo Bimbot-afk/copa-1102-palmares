@@ -171,12 +171,56 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 2. Funciones del Modal
     const modalStarsContainer = document.getElementById('modal-stars-container');
     const modalContent = document.querySelector('.modal-content');
+    const nameText = document.getElementById('name-text');
+    const pauseAudioBtn = document.getElementById('pause-audio-btn');
+
+    let currentAudio = null;
+    let isPlaying = false;
+
+    pauseAudioBtn.addEventListener('click', () => {
+        if (currentAudio) {
+            if (isPlaying) {
+                currentAudio.pause();
+                pauseAudioBtn.textContent = '🔈';
+                isPlaying = false;
+            } else {
+                currentAudio.play();
+                pauseAudioBtn.textContent = '🔊';
+                isPlaying = true;
+            }
+        }
+    });
 
     function openModal(team, color) {
         modalContent.style.setProperty('--team-color', color);
         
         modalLogo.src = team.logo;
-        modalTeamName.textContent = team.name;
+        nameText.textContent = team.name;
+
+        // Reproducir Cántico
+        if (currentAudio) {
+            currentAudio.pause();
+            currentAudio = null;
+        }
+        
+        if (team.chant) {
+            pauseAudioBtn.style.display = 'block';
+            pauseAudioBtn.textContent = '🔊';
+            currentAudio = new Audio(team.chant);
+            currentAudio.volume = 0.5; // Volumen moderado
+            currentAudio.loop = true;  // Repetir mientras esté abierto
+            
+            // El navegador permite autoplay porque el usuario hizo click en la tarjeta
+            currentAudio.play().then(() => {
+                isPlaying = true;
+            }).catch(e => {
+                console.log("Autoplay bloqueado o archivo no encontrado", e);
+                pauseAudioBtn.textContent = '🔈';
+                isPlaying = false;
+            });
+        } else {
+            pauseAudioBtn.style.display = 'none';
+        }
 
         // Estrellas
         modalStarsContainer.innerHTML = '';
@@ -230,13 +274,51 @@ document.addEventListener('DOMContentLoaded', async () => {
         listRunner.innerHTML = '';
         listThird.innerHTML = '';
 
-        // Llenar datos
-        fillList(listChamp, countChamp, team.championships);
-        fillList(listRunner, countRunner, team.runnerUps);
-        fillList(listThird, countThird, team.thirdPlaces);
+        // Llenar Listas de Trofeos
+        if (team.championships) {
+            countChamp.textContent = team.championships.length;
+            team.championships.forEach(t => {
+                const li = document.createElement('li');
+                li.innerHTML = `<strong>${t.name}</strong><br><small>${t.result || ''}</small><br><i>${t.note || ''}</i>`;
+                listChamp.appendChild(li);
+            });
+        }
+
+        if (team.runnerUps) {
+            countRunner.textContent = team.runnerUps.length;
+            team.runnerUps.forEach(t => {
+                const li = document.createElement('li');
+                li.innerHTML = `<strong>${t.name}</strong><br><small>${t.result || ''}</small><br><i>${t.note || ''}</i>`;
+                listRunner.appendChild(li);
+            });
+        }
+
+        if (team.thirdPlaces) {
+            countThird.textContent = team.thirdPlaces.length;
+            team.thirdPlaces.forEach(t => {
+                const li = document.createElement('li');
+                li.innerHTML = `<strong>${t.name}</strong><br><small>${t.result || ''}</small><br><i>${t.note || ''}</i>`;
+                listThird.appendChild(li);
+            });
+        }
 
         modal.style.display = 'flex';
     }
+
+    // 3. Cerrar Modal y apagar audio
+    function closeModal() {
+        modal.style.display = 'none';
+        if (currentAudio) {
+            currentAudio.pause();
+            currentAudio.currentTime = 0;
+            currentAudio = null;
+        }
+    }
+
+    closeBtn.addEventListener('click', closeModal);
+    window.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
 
     function fillList(ulElement, countElement, dataArray) {
         countElement.textContent = dataArray.length;
