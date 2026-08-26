@@ -59,7 +59,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
         const querySnapshot = await getDocs(collection(db, "teams"));
         querySnapshot.forEach((docSnap) => {
-            teams.push(docSnap.data());
+            const teamData = docSnap.data();
+            teamData.docId = docSnap.id;
+            teams.push(teamData);
         });
         
         if (teams.length === 0) {
