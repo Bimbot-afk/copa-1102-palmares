@@ -188,11 +188,55 @@ header p {
     right: 20px;
     font-size: 28px;
     font-weight: bold;
+    text-decoration: none;
     cursor: pointer;
 }
 
 .close-button:hover {
     color: white;
+}
+
+/* Insignias / Logros */
+.badges-section {
+    margin-top: 20px;
+    background-color: rgba(42, 42, 42, 0.7);
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid #444;
+}
+.badges-section h4 {
+    margin: 0 0 10px 0;
+    color: var(--accent-color);
+}
+.badges-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.badge-item {
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    padding: 8px 12px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.badge-icon {
+    font-size: 1.8rem;
+}
+.badge-info {
+    display: flex;
+    flex-direction: column;
+}
+.badge-title {
+    font-weight: bold;
+    font-size: 0.95rem;
+    color: var(--accent-color);
+}
+.badge-desc {
+    font-size: 0.8rem;
+    color: #ccc;
 }
 
 /* Layout de 2 columnas para el modal */

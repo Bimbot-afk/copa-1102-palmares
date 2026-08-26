@@ -191,21 +191,38 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         // Descripción
         modalTeamDesc.textContent = team.description || "Sin descripción disponible.";
-        
+
         // Rival
-        if (team.rival && team.rival.name) {
-            modalRivalSection.style.display = 'block';
+        if (team.rival && team.rival.name !== "N/A") {
+            modalRivalSection.style.display = 'flex';
+            modalRivalLogo.src = team.rival.logo || "";
+            modalRivalLogo.style.display = team.rival.logo ? 'block' : 'none';
             modalRivalName.textContent = team.rival.name;
-            modalRivalHistory.textContent = team.rival.history || "";
-            
-            if (team.rival.logo) {
-                modalRivalLogo.src = team.rival.logo;
-                modalRivalLogo.style.display = 'inline-block';
-            } else {
-                modalRivalLogo.style.display = 'none';
-            }
+            modalRivalHistory.textContent = team.rival.history;
         } else {
             modalRivalSection.style.display = 'none';
+        }
+
+        // Insignias
+        const badgesSection = document.getElementById('modal-badges-section');
+        const badgesContainer = document.getElementById('modal-badges-container');
+        if (team.badges && team.badges.length > 0) {
+            badgesSection.style.display = 'block';
+            badgesContainer.innerHTML = '';
+            team.badges.forEach(badge => {
+                const badgeDiv = document.createElement('div');
+                badgeDiv.classList.add('badge-item');
+                badgeDiv.innerHTML = `
+                    <div class="badge-icon">${badge.icon}</div>
+                    <div class="badge-info">
+                        <span class="badge-title">${badge.title}</span>
+                        <span class="badge-desc">${badge.description}</span>
+                    </div>
+                `;
+                badgesContainer.appendChild(badgeDiv);
+            });
+        } else {
+            badgesSection.style.display = 'none';
         }
 
         // Limpiar listas

@@ -104,6 +104,37 @@
                 <button id="save-news-btn" class="action-btn save-btn">Publicar Noticia</button>
                 <p id="news-msg" class="success-msg"></p>
 
+                <hr class="divider">
+                <h3 class="section-title">5. Otorgar Insignias Especiales</h3>
+                <div class="form-group">
+                    <label>Selecciona una plantilla:</label>
+                    <select id="badge-template">
+                        <option value="custom">-- Crear Insignia Personalizada --</option>
+                        <option value="🥶|Pecho Frío|Perdió finales de forma increíble">🥶 Pecho Frío</option>
+                        <option value="🛡️|La Muralla|Impasable en defensa">🛡️ La Muralla</option>
+                        <option value="⚔️|Matagigantes|Le gana a los favoritos">⚔️ Matagigantes</option>
+                        <option value="🍀|Pura Suerte|Gana de rebote o penales">🍀 Pura Suerte</option>
+                        <option value="🤡|El Paseador|Solo viene a regalar puntos">🤡 El Paseador</option>
+                        <option value="🐐|El GOAT|El mejor de todos">🐐 El GOAT</option>
+                    </select>
+                </div>
+                <div class="form-group" style="display: flex; gap: 10px;">
+                    <div style="flex: 1;">
+                        <label>Icono (Emoji):</label>
+                        <input type="text" id="badge-icon" placeholder="Ej: 🏆">
+                    </div>
+                    <div style="flex: 3;">
+                        <label>Título:</label>
+                        <input type="text" id="badge-title" placeholder="Ej: Rey de las Remontadas">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Descripción:</label>
+                    <input type="text" id="badge-desc" placeholder="Ej: Nunca te des por vencido...">
+                </div>
+                <button id="save-badge-btn" class="action-btn save-btn">Otorgar Insignia</button>
+                <p id="badge-msg" class="success-msg"></p>
+
             </div>
             
             <hr class="divider">

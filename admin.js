@@ -222,7 +222,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         const categories = [
             { id: 'championships', label: '🥇 Campeonato' },
             { id: 'runnerUps', label: '🥈 Subcampeón' },
-            { id: 'thirdPlaces', label: '🥉 Tercer Puesto' }
+            { id: 'thirdPlaces', label: '🥉 Tercer Puesto' },
+            { id: 'badges', label: '🏅 Insignia' }
         ];
 
         let hasItems = false;
@@ -234,23 +235,29 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const li = document.createElement('li');
                 
                 const textSpan = document.createElement('span');
-                textSpan.textContent = `${cat.label} - ${item.name}`;
+                if (cat.id === 'badges') {
+                    textSpan.textContent = `${cat.label} - ${item.icon} ${item.title}`;
+                } else {
+                    textSpan.textContent = `${cat.label} - ${item.name}`;
+                }
 
                 const buttonsDiv = document.createElement('div');
                 buttonsDiv.style.display = 'flex';
                 buttonsDiv.style.gap = '5px';
 
-                const editBtn = document.createElement('button');
-                editBtn.textContent = 'Editar';
-                editBtn.classList.add('edit-btn');
-                editBtn.addEventListener('click', () => editTrophy(cat.id, item));
+                if (cat.id !== 'badges') {
+                    const editBtn = document.createElement('button');
+                    editBtn.textContent = 'Editar';
+                    editBtn.classList.add('edit-btn');
+                    editBtn.addEventListener('click', () => editTrophy(cat.id, item));
+                    buttonsDiv.appendChild(editBtn);
+                }
 
                 const delBtn = document.createElement('button');
                 delBtn.textContent = 'Borrar';
                 delBtn.classList.add('delete-btn');
-                delBtn.addEventListener('click', () => deleteTrophy(cat.id, item));
+                delBtn.addEventListener('click', () => deleteItem(cat.id, item));
 
-                buttonsDiv.appendChild(editBtn);
                 buttonsDiv.appendChild(delBtn);
 
                 li.appendChild(textSpan);
@@ -260,7 +267,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
 
         if (!hasItems) {
-            deleteList.innerHTML = '<li style="justify-content:center; color:#777;">No hay trofeos registrados</li>';
+            deleteList.innerHTML = '<li style="justify-content:center; color:#777;">No hay registros</li>';
         }
     }
 
@@ -281,20 +288,22 @@ document.addEventListener('DOMContentLoaded', async () => {
         window.scrollTo({ top: document.getElementById('editor-sections').offsetTop - 20, behavior: 'smooth' });
     }
 
-    async function deleteTrophy(trophyType, itemObject) {
-        if (!confirm(`¿Estás seguro de que deseas eliminar: ${itemObject.name}?`)) return;
+    async function deleteItem(type, itemObject) {
+        const confirmName = type === 'badges' ? itemObject.title : itemObject.name;
+        if (!confirm(`¿Estás seguro de que deseas eliminar: ${confirmName}?`)) return;
 
         const teamRef = doc(db, "teams", currentSelectedTeam.docId);
         
         try {
             await updateDoc(teamRef, {
-                [trophyType]: arrayRemove(itemObject)
+                [type]: arrayRemove(itemObject)
             });
 
             // Actualizar array local filtrándolo
-            currentSelectedTeam[trophyType] = currentSelectedTeam[trophyType].filter(
-                t => t.name !== itemObject.name || t.result !== itemObject.result || t.note !== itemObject.note
-            );
+            currentSelectedTeam[type] = currentSelectedTeam[type].filter(t => {
+                if(type === 'badges') return t.title !== itemObject.title;
+                return t.name !== itemObject.name || t.result !== itemObject.result || t.note !== itemObject.note;
+            });
             
             renderDeleteList();
             alert("Eliminado con éxito.");
@@ -303,6 +312,72 @@ document.addEventListener('DOMContentLoaded', async () => {
             alert("Error al eliminar.");
         }
     }
+
+    // Insignias
+    const badgeTemplate = document.getElementById('badge-template');
+    const badgeIcon = document.getElementById('badge-icon');
+    const badgeTitle = document.getElementById('badge-title');
+    const badgeDesc = document.getElementById('badge-desc');
+    const saveBadgeBtn = document.getElementById('save-badge-btn');
+    const badgeMsg = document.getElementById('badge-msg');
+
+    badgeTemplate.addEventListener('change', () => {
+        if (badgeTemplate.value === 'custom') {
+            badgeIcon.value = '';
+            badgeTitle.value = '';
+            badgeDesc.value = '';
+        } else {
+            const parts = badgeTemplate.value.split('|');
+            badgeIcon.value = parts[0];
+            badgeTitle.value = parts[1];
+            badgeDesc.value = parts[2];
+        }
+    });
+
+    saveBadgeBtn.addEventListener('click', async () => {
+        if (!currentSelectedTeam) return;
+        if (!badgeIcon.value || !badgeTitle.value) {
+            badgeMsg.style.color = '#ff4d4d';
+            badgeMsg.textContent = 'Icono y Título son obligatorios.';
+            return;
+        }
+
+        saveBadgeBtn.disabled = true;
+        saveBadgeBtn.textContent = 'Guardando...';
+
+        const newBadge = {
+            icon: badgeIcon.value,
+            title: badgeTitle.value,
+            description: badgeDesc.value
+        };
+
+        try {
+            const teamRef = doc(db, "teams", currentSelectedTeam.docId);
+            await updateDoc(teamRef, {
+                badges: arrayUnion(newBadge)
+            });
+
+            if (!currentSelectedTeam.badges) currentSelectedTeam.badges = [];
+            currentSelectedTeam.badges.push(newBadge);
+
+            badgeMsg.style.color = '#2ecc71';
+            badgeMsg.textContent = '¡Insignia otorgada!';
+            
+            badgeIcon.value = '';
+            badgeTitle.value = '';
+            badgeDesc.value = '';
+            badgeTemplate.value = 'custom';
+
+            renderDeleteList();
+        } catch (error) {
+            badgeMsg.style.color = '#ff4d4d';
+            badgeMsg.textContent = 'Error al guardar.';
+        }
+
+        saveBadgeBtn.disabled = false;
+        saveBadgeBtn.textContent = 'Otorgar Insignia';
+        setTimeout(() => badgeMsg.textContent = '', 3000);
+    });
 
     // Noticias
     const newsInput = document.getElementById('news-text');
