@@ -61,11 +61,24 @@
                     </h2>
                     <p id="modal-team-desc" class="team-description"></p>
                     
-                    <div class="rival-section" id="modal-rival-section">
-                        <h4>Máximo Rival</h4>
+                    <div class="rival-section" id="modal-rival-section" style="display: none;">
+                        <h4>⚔️ Máximo Rival</h4>
                         <img id="modal-rival-logo" src="" alt="Escudo Rival" class="rival-logo">
                         <span id="modal-rival-name" class="rival-name"></span>
-                        <span id="modal-rival-history" class="rival-history"></span>
+                        
+                        <!-- Mini tabla de stats -->
+                        <div class="rival-stats-grid" id="modal-rival-stats">
+                            <div class="r-stat"><span class="r-val" id="r-p">0</span><span class="r-lbl">PJ</span></div>
+                            <div class="r-stat"><span class="r-val" id="r-w">0</span><span class="r-lbl">PG</span></div>
+                            <div class="r-stat"><span class="r-val" id="r-d">0</span><span class="r-lbl">PE</span></div>
+                            <div class="r-stat"><span class="r-val" id="r-l">0</span><span class="r-lbl">PP</span></div>
+                        </div>
+                    </div>
+
+                    <div class="records-section" id="modal-records-section" style="display: none;">
+                        <h4>📊 Récords</h4>
+                        <p class="record-item" id="biggest-win-container"><strong>Mayor Goleada Hecha:</strong> <br><span id="biggest-win-text"></span></p>
+                        <p class="record-item" id="biggest-loss-container"><strong>Mayor Goleada Recibida:</strong> <br><span id="biggest-loss-text"></span></p>
                     </div>
 
                     <div class="badges-section" id="modal-badges-section" style="display: none;">

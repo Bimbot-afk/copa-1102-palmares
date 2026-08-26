@@ -104,11 +104,23 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             if (currentSelectedTeam.rival) {
                 teamRivalName.value = currentSelectedTeam.rival.name || "";
-                teamRivalHistory.value = currentSelectedTeam.rival.history || "";
+                if (currentSelectedTeam.rival.stats) {
+                    document.getElementById('rival-p').value = currentSelectedTeam.rival.stats.p || "";
+                    document.getElementById('rival-w').value = currentSelectedTeam.rival.stats.w || "";
+                    document.getElementById('rival-d').value = currentSelectedTeam.rival.stats.d || "";
+                    document.getElementById('rival-l').value = currentSelectedTeam.rival.stats.l || "";
+                } else {
+                    document.getElementById('rival-p').value = "";
+                    document.getElementById('rival-w').value = "";
+                    document.getElementById('rival-d').value = "";
+                    document.getElementById('rival-l').value = "";
+                }
             } else {
                 teamRivalName.value = "";
-                teamRivalHistory.value = "";
             }
+            
+            document.getElementById('team-biggest-win').value = currentSelectedTeam.biggestWin || "";
+            document.getElementById('team-biggest-loss').value = currentSelectedTeam.biggestLoss || "";
 
             renderDeleteList();
         }
@@ -127,12 +139,24 @@ document.addEventListener('DOMContentLoaded', async () => {
         const rivalLogo = (currentSelectedTeam.rival && currentSelectedTeam.rival.logo) ? currentSelectedTeam.rival.logo : "";
         const chant = document.getElementById('team-chant').value;
 
+        const rivalStats = {
+            p: document.getElementById('rival-p').value || 0,
+            w: document.getElementById('rival-w').value || 0,
+            d: document.getElementById('rival-d').value || 0,
+            l: document.getElementById('rival-l').value || 0
+        };
+
+        const bWin = document.getElementById('team-biggest-win').value;
+        const bLoss = document.getElementById('team-biggest-loss').value;
+
         await updateDoc(teamRef, {
             description: teamDescInput.value,
             chant: chant,
+            biggestWin: bWin,
+            biggestLoss: bLoss,
             rival: {
                 name: teamRivalName.value,
-                history: teamRivalHistory.value,
+                stats: rivalStats,
                 logo: rivalLogo
             }
         });
@@ -140,7 +164,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Actualizar el objeto local
         currentSelectedTeam.description = teamDescInput.value;
         currentSelectedTeam.chant = chant;
-        currentSelectedTeam.rival = { name: teamRivalName.value, history: teamRivalHistory.value, logo: rivalLogo };
+        currentSelectedTeam.biggestWin = bWin;
+        currentSelectedTeam.biggestLoss = bLoss;
+        currentSelectedTeam.rival = { name: teamRivalName.value, stats: rivalStats, logo: rivalLogo };
 
         profileMsg.textContent = "¡Perfil actualizado!";
         saveProfileBtn.disabled = false;

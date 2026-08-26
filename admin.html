@@ -80,8 +80,19 @@
                 </div>
                 
                 <div class="form-group">
-                    <label>Historial contra el Rival:</label>
-                    <input type="text" id="team-rival-history">
+                    <label>Estadísticas vs Máximo Rival (Jugados / Ganados / Empates / Perdidos):</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="number" id="rival-p" placeholder="PJ" title="Partidos Jugados">
+                        <input type="number" id="rival-w" placeholder="PG" title="Partidos Ganados">
+                        <input type="number" id="rival-d" placeholder="PE" title="Partidos Empatados">
+                        <input type="number" id="rival-l" placeholder="PP" title="Partidos Perdidos">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Récords (Opcional):</label>
+                    <input type="text" id="team-biggest-win" placeholder="Mayor goleada hecha (Ej: 5-0 vs Cristian FC)" style="margin-bottom: 8px;">
+                    <input type="text" id="team-biggest-loss" placeholder="Mayor goleada recibida (Ej: 0-6 vs AC Cagua)">
                 </div>
 
                 <div class="form-group">

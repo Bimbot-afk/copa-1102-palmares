@@ -237,14 +237,57 @@ document.addEventListener('DOMContentLoaded', async () => {
         modalTeamDesc.textContent = team.description || "Sin descripción disponible.";
 
         // Rival
+        const modalRivalSection = document.getElementById('modal-rival-section');
+        const modalRivalName = document.getElementById('modal-rival-name');
+        const modalRivalLogo = document.getElementById('modal-rival-logo');
+        const rp = document.getElementById('r-p');
+        const rw = document.getElementById('r-w');
+        const rd = document.getElementById('r-d');
+        const rl = document.getElementById('r-l');
+
         if (team.rival && team.rival.name !== "N/A") {
             modalRivalSection.style.display = 'flex';
             modalRivalLogo.src = team.rival.logo || "";
             modalRivalLogo.style.display = team.rival.logo ? 'block' : 'none';
             modalRivalName.textContent = team.rival.name;
-            modalRivalHistory.textContent = team.rival.history;
+            
+            if (team.rival.stats) {
+                rp.textContent = team.rival.stats.p || 0;
+                rw.textContent = team.rival.stats.w || 0;
+                rd.textContent = team.rival.stats.d || 0;
+                rl.textContent = team.rival.stats.l || 0;
+            } else {
+                rp.textContent = 0; rw.textContent = 0; rd.textContent = 0; rl.textContent = 0;
+            }
         } else {
             modalRivalSection.style.display = 'none';
+        }
+
+        // Récords
+        const modalRecordsSection = document.getElementById('modal-records-section');
+        const bigWinText = document.getElementById('biggest-win-text');
+        const bigLossText = document.getElementById('biggest-loss-text');
+        const bigWinContainer = document.getElementById('biggest-win-container');
+        const bigLossContainer = document.getElementById('biggest-loss-container');
+
+        if (team.biggestWin || team.biggestLoss) {
+            modalRecordsSection.style.display = 'block';
+            
+            if (team.biggestWin) {
+                bigWinContainer.style.display = 'block';
+                bigWinText.textContent = team.biggestWin;
+            } else {
+                bigWinContainer.style.display = 'none';
+            }
+
+            if (team.biggestLoss) {
+                bigLossContainer.style.display = 'block';
+                bigLossText.textContent = team.biggestLoss;
+            } else {
+                bigLossContainer.style.display = 'none';
+            }
+        } else {
+            modalRecordsSection.style.display = 'none';
         }
 
         // Insignias

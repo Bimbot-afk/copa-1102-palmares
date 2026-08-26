@@ -239,6 +239,52 @@ header p {
     color: #ccc;
 }
 
+/* Rival Stats & Records */
+.rival-stats-grid {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    justify-content: center;
+}
+.r-stat {
+    background: #111;
+    border: 1px solid #333;
+    border-radius: 5px;
+    padding: 5px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 45px;
+}
+.r-val {
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: var(--accent-color);
+}
+.r-lbl {
+    font-size: 0.7rem;
+    color: #888;
+}
+
+.records-section {
+    margin-top: 20px;
+    background-color: rgba(42, 42, 42, 0.7);
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid #444;
+}
+.records-section h4 {
+    margin: 0 0 10px 0;
+    color: var(--accent-color);
+}
+.record-item {
+    font-size: 0.9rem;
+    margin: 8px 0;
+}
+.record-item span {
+    color: #ccc;
+}
+
 /* Layout de 2 columnas para el modal */
 .modal-layout {
     display: flex;
