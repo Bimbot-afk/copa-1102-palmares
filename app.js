@@ -426,3 +426,24 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Inicializar
     renderTeams();
 });
+
+// Theme Toggle
+const themeToggle = document.getElementById('theme-toggle');
+if (themeToggle) {
+    const currentTheme = localStorage.getItem('theme') || 'dark';
+    if (currentTheme === 'light') {
+        document.body.classList.add('light-theme');
+        themeToggle.textContent = '?? Oscuro';
+    }
+
+    themeToggle.addEventListener('click', () => {
+        document.body.classList.toggle('light-theme');
+        if (document.body.classList.contains('light-theme')) {
+            localStorage.setItem('theme', 'light');
+            themeToggle.textContent = '?? Oscuro';
+        } else {
+            localStorage.setItem('theme', 'dark');
+            themeToggle.textContent = '?? Claro';
+        }
+    });
+}

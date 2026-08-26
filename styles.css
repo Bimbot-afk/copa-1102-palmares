@@ -4,6 +4,25 @@
     --text-color: #f0f0f0;
     --accent-color: #f39c12;
     --modal-bg: rgba(0, 0, 0, 0.8);
+    --border-color: var(--border-color);
+    --subtext-color: var(--subtext-color);
+    --section-bg: var(--section-bg);
+    --alt-bg: var(--alt-bg);
+    --dark-bg: var(--dark-bg);
+    --stat-bg: var(--stat-bg);
+}
+
+body.light-theme {
+    --primary-bg: #f5f5f5;
+    --card-bg: #ffffff;
+    --text-color: #222222;
+    --modal-bg: rgba(255, 255, 255, 0.9);
+    --border-color: var(--subtext-color);
+    --subtext-color: #555555;
+    --section-bg: #eaeaea;
+    --alt-bg: #f0f0f0;
+    --dark-bg: #e0e0e0;
+    --stat-bg: #f9f9f9;
 }
 
 body {
@@ -21,7 +40,7 @@ header h1 {
 }
 
 header p {
-    color: #aaaaaa;
+    color: var(--subtext-color);
     margin-bottom: 40px;
 }
 
@@ -112,7 +131,7 @@ header p {
     max-height: 80vh;
     overflow-y: auto;
     position: relative;
-    border: 1px solid #333;
+    border: 1px solid var(--border-color);
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     text-align: left;
 }
@@ -152,7 +171,7 @@ header p {
     background-color: var(--card-bg);
     padding: 20px;
     border-radius: 15px;
-    border: 1px solid #333;
+    border: 1px solid var(--border-color);
 }
 .ranking-section h2 {
     color: var(--accent-color);
@@ -169,22 +188,22 @@ header p {
 .ranking-table th, .ranking-table td {
     padding: 12px 15px;
     text-align: center;
-    border-bottom: 1px solid #333;
+    border-bottom: 1px solid var(--border-color);
 }
 .ranking-table th {
-    background-color: #2a2a2a;
+    background-color: var(--section-bg);
     color: var(--accent-color);
     font-weight: bold;
 }
 .ranking-table tr:hover {
-    background-color: #222;
+    background-color: var(--section-bg);
 }
 .ranking-table tr:nth-child(1) td {
     background-color: rgba(243, 156, 18, 0.1);
 }
 
 .close-button {
-    color: #aaa;
+    color: var(--subtext-color);
     position: absolute;
     top: 15px;
     right: 20px;
@@ -195,7 +214,7 @@ header p {
 }
 
 .close-button:hover {
-    color: white;
+    color: var(--accent-color);
 }
 
 /* Insignias / Logros */
@@ -204,7 +223,7 @@ header p {
     background-color: rgba(42, 42, 42, 0.7);
     padding: 15px;
     border-radius: 10px;
-    border: 1px solid #444;
+    border: 1px solid var(--border-color);
 }
 .badges-section h4 {
     margin: 0 0 10px 0;
@@ -216,8 +235,8 @@ header p {
     gap: 10px;
 }
 .badge-item {
-    background-color: #1a1a1a;
-    border: 1px solid #333;
+    background-color: var(--alt-bg);
+    border: 1px solid var(--border-color);
     padding: 8px 12px;
     border-radius: 8px;
     display: flex;
@@ -238,7 +257,7 @@ header p {
 }
 .badge-desc {
     font-size: 0.8rem;
-    color: #ccc;
+    color: var(--subtext-color);
 }
 
 /* Rival Stats & Records */
@@ -249,8 +268,8 @@ header p {
     justify-content: center;
 }
 .r-stat {
-    background: #111;
-    border: 1px solid #333;
+    background: var(--stat-bg);
+    border: 1px solid var(--border-color);
     border-radius: 5px;
     padding: 5px 10px;
     display: flex;
@@ -265,7 +284,7 @@ header p {
 }
 .r-lbl {
     font-size: 0.7rem;
-    color: #888;
+    color: var(--subtext-color);
 }
 
 .records-section {
@@ -273,7 +292,7 @@ header p {
     background-color: rgba(42, 42, 42, 0.7);
     padding: 15px;
     border-radius: 10px;
-    border: 1px solid #444;
+    border: 1px solid var(--border-color);
 }
 .records-section h4 {
     margin: 0 0 10px 0;
@@ -284,7 +303,7 @@ header p {
     margin: 8px 0;
 }
 .record-item span {
-    color: #ccc;
+    color: var(--subtext-color);
 }
 
 /* Layout de 2 columnas para el modal */
@@ -301,7 +320,7 @@ header p {
     flex-direction: column;
     align-items: center;
     text-align: center;
-    border-right: 1px solid #333;
+    border-right: 1px solid var(--border-color);
     padding-right: 20px;
     padding-top: 20px;
 }
@@ -321,7 +340,7 @@ header p {
 
 .team-description {
     font-size: 0.95rem;
-    color: #cccccc;
+    color: var(--subtext-color);
     margin-top: 15px;
     margin-bottom: 20px;
     line-height: 1.4;
@@ -329,7 +348,7 @@ header p {
 }
 
 .rival-section {
-    background-color: #2a2a2a;
+    background-color: var(--section-bg);
     padding: 15px;
     border-radius: 10px;
     width: 100%;
@@ -339,7 +358,7 @@ header p {
     align-items: center;
     justify-content: center;
     text-align: center;
-    border: 1px solid #444;
+    border: 1px solid var(--border-color);
 }
 
 .rival-section h4 {
@@ -368,7 +387,7 @@ header p {
 .rival-history {
     display: block;
     font-size: 0.9rem;
-    color: #aaa;
+    color: var(--subtext-color);
 }
 
 /* Columna Derecha */
@@ -392,7 +411,7 @@ header p {
     margin-top: 0;
     margin-bottom: 15px;
     color: var(--accent-color);
-    border-bottom: 1px solid #333;
+    border-bottom: 1px solid var(--border-color);
     padding-bottom: 5px;
     display: flex;
     align-items: center;
@@ -405,7 +424,7 @@ header p {
 }
 
 .trophy-section li {
-    background-color: #2a2a2a;
+    background-color: var(--section-bg);
     margin-bottom: 10px;
     padding: 12px 15px;
     border-radius: 8px;
@@ -429,7 +448,7 @@ header p {
 
 .tournament-note {
     font-size: 0.9rem;
-    color: #ccc;
+    color: var(--subtext-color);
     font-style: italic;
 }
 
@@ -442,7 +461,7 @@ header p {
 
     .modal-left {
         border-right: none;
-        border-bottom: 1px solid #333;
+        border-bottom: 1px solid var(--border-color);
         padding-right: 0;
         padding-bottom: 20px;
     }
@@ -467,16 +486,16 @@ header p {
 /* Trofeos Grid */
 .trophy-category {
     margin-bottom: 25px;
-    background-color: #1a1a1a;
+    background-color: var(--alt-bg);
     padding: 15px;
     border-radius: 10px;
-    border: 1px solid #333;
+    border: 1px solid var(--border-color);
 }
 .trophy-category h3 {
     margin-top: 0;
     margin-bottom: 15px;
     color: var(--accent-color);
-    border-bottom: 1px solid #333;
+    border-bottom: 1px solid var(--border-color);
     padding-bottom: 5px;
 }
 .trophy-grid {
@@ -498,7 +517,7 @@ header p {
 /* Popover */
 .popover {
     position: absolute;
-    background-color: #1a1a1a;
+    background-color: var(--alt-bg);
     border: 2px solid var(--accent-color);
     border-radius: 10px;
     padding: 20px;
@@ -515,9 +534,7 @@ header p {
     position: absolute;
     top: 10px;
     right: 15px;
-    color: #fff;
-    cursor: pointer;
-    font-size: 1.5rem;
+    color: var(--text-color); cursor: pointer; font-size: 1.5rem;
 }
 .popover h4 {
     margin: 0 0 15px 0;
@@ -529,7 +546,7 @@ header p {
     justify-content: center;
     align-items: center;
     margin-bottom: 15px;
-    background: #000;
+    background: var(--dark-bg);
     padding: 15px;
     border-radius: 8px;
 }
@@ -541,7 +558,7 @@ header p {
 }
 #popover-note {
     font-size: 1rem;
-    color: #ccc;
+    color: var(--subtext-color);
     font-style: italic;
     margin: 0;
 }
@@ -590,12 +607,14 @@ header p {
 }
 .goat-name {
     font-size: 1.8rem;
-    color: #fff;
-    margin: 0;
-    text-shadow: 0 2px 5px #000;
+    color: var(--text-color); margin: 0; text-shadow: 0 2px 5px rgba(0,0,0,0.5);
 }
 @keyframes float {
     0% { transform: translateY(0px); }
     50% { transform: translateY(-10px); }
     100% { transform: translateY(0px); }
 }
+
+
+
+
