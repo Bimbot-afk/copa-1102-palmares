@@ -334,6 +334,10 @@ header p {
     border-radius: 10px;
     width: 100%;
     box-sizing: border-box;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center;
+    justify-content: center;
     text-align: center;
     border: 1px solid #444;
 }
