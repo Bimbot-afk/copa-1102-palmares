@@ -241,7 +241,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const rl = document.getElementById('r-l');
 
         if (team.rival && team.rival.name !== "N/A" && team.rival.name !== "") {
-            modalRivalSection.style.display = 'flex';
+            modalRivalSection.style.display = 'block';
             modalRivalLogo.src = team.rival.logo || "";
             modalRivalLogo.style.display = team.rival.logo ? 'block' : 'none';
             modalRivalName.textContent = team.rival.name;
